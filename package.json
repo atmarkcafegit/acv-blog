@@ -1,0 +1,23 @@
+{
+  "name": "auth-routes",
+  "description": "",
+  "dependencies": {
+    "axios": "^0.16.1",
+    "body-parser": "^1.17.2",
+    "cross-env": "^5.0.0",
+    "express": "^4.15.3",
+    "express-session": "^1.15.3",
+    "nuxt": "^1.0.0-alpha1",
+    "vee-validate": "^2.0.0-rc.9",
+    "vuetify": "^0.14.8"
+  },
+  "scripts": {
+    "dev": "node server.js",
+    "build": "nuxt build",
+    "start": "cross-env NODE_ENV=production node server.js"
+  },
+  "devDependencies": {
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.1"
+  }
+}

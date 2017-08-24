@@ -1,0 +1,4 @@
+.idea
+.nuxt
+logs
+node_modules/
