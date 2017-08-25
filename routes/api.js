@@ -72,14 +72,14 @@ router.post('/register', (req, res) => {
     })
 });
 
-router.get('/api/posts/:page', (req, res) => {
+router.get('/api/posts/:page?', (req, res) => {
     Post.paginate({}, {
         page: req.params.page ? parseInt(req.params.page) : 1,
         populate: 'user',
         limit: PAGE_LIMIT
-    }).then(res => res.json({
+    }).then(result => res.json({
         ok: true,
-        data: res
+        data: result
     })).catch(e => {
         console.log(e);
         res.status(500).json({
@@ -108,6 +108,9 @@ router.get('/api/post/:slug', (req, res) => {
         slug: req.params.slug
     }).populate('user').then(post => {
         if (post) {
+            post.views += 1;
+            post.save();
+            
             res.json({
                 ok: true,
                 data: post
@@ -125,6 +128,10 @@ router.get('/api/post/:slug', (req, res) => {
             message: 'Internal server error.'
         })
     })
+});
+
+router.post('/api/post/:slug/vote', (req, res) => {
+
 });
 
 router.put('/api/post/:slug', (req, res) => {

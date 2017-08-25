@@ -6,6 +6,7 @@
                 <h1>Login</h1>
                 <hr>
                 <form v-on:submit.prevent="login">
+                    <span v-show="errors.has('error')" class="alert-danger">{{ errors.first('error') }}</span>
                     <div class="form-group">
                         <label for="username">Username</label>
                         <input v-validate.disabled data-vv-rules="required" class="form-control"
@@ -21,7 +22,6 @@
                     </div>
                     <button class="btn btn-primary">Login</button>
                     <hr>
-                    <a href="#">Forgot your password?</a>
                 </form>
             </div>
             <div class="col-md-4"></div>
@@ -32,6 +32,7 @@
     export default {
         data() {
             return {
+                error: null,
                 username: null,
                 password: null
             }
@@ -43,12 +44,15 @@
         methods: {
             login() {
                 this.$validator.validateAll();
+                this.errors.clear();
                 if (!this.errors.any()) {
-                    this.$store.dispatch('login', {
+                    this.$store.dispatch('LOGIN', {
                         username: this.username,
                         password: this.password
                     }).then(() => {
                         this.$router.push('/');
+                    }).catch(e => {
+                        this.errors.add('error', e.response.data.message);
                     });
                 }
             }

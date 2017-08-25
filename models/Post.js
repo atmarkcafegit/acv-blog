@@ -5,9 +5,11 @@ const monguurl = require('monguurl');
 
 const PostSchema = new Schema({
     title: {type: String, required: true},
-    slug: {type: string, index: {unique: true}},
+    slug: {type: String, index: {unique: true}},
     content: {type: String, required: true},
     user: {type: Schema.Types.ObjectId, ref: 'User'},
+    views: {type: Number},
+    vote: {type: Number},
     createdAt: {type: Date},
     updatedAt: {type: Date}
 });
