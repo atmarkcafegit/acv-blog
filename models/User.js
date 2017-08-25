@@ -13,7 +13,7 @@ const UserSchema = new Schema({
     updatedAt: {type: Date}
 });
 
-UserSchema.pre('save', next => {
+UserSchema.pre('save', function (next) {
     let now = new Date();
 
     this.updatedAt = now;

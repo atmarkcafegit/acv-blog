@@ -16,19 +16,26 @@ app.use(session({
     cookie: {maxAge: 60000}
 }));
 
-app.post('/api/logout', function (req, res) {
-    delete req.session.authUser;
-    res.json({ok: true})
-});
+const api = require('./routes/api');
+app.use(api);
 
 let config = require('./nuxt.config.js');
 config.dev = !(process.env.NODE_ENV === 'production');
 
-let nuxt = new Nuxt(config);
-new Builder(nuxt).build().then(() => {
-    app.use(nuxt.render);
-    app.listen(port, host);
-    console.log('Server listening on ' + host + ':' + port) // eslint-disable-line no-console
+const mongoose = require('mongoose');
+const Q = require('q');
+const uri = 'mongodb://localhost:27017/acv_blog';
+mongoose.Promise = Q.Promise;
+
+mongoose.connect(uri).then(() => {
+    let nuxt = new Nuxt(config);
+    new Builder(nuxt).build().then(() => {
+        app.use(nuxt.render);
+        app.listen(port, host);
+        console.log('Server listening on ' + host + ':' + port) // eslint-disable-line no-console
+    });
+}, e => {
+    console.log(e)
 });
 
 

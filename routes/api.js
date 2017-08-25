@@ -1,0 +1,165 @@
+const router = require('express').Router();
+const User = require('../models/User');
+const Post = require('../models/Post');
+
+const PAGE_LIMIT = 5;
+
+router.post('/login', (req, res) => {
+    User.findOne({
+        username: req.body.username
+    }).then(user => {
+        if (user) {
+            user.comparePassword(req.body.password, (error, r) => {
+                if (error) {
+                    console.log(r);
+                    res.status(500).json({
+                        ok: false,
+                        message: 'Internal server error.'
+                    })
+                }
+
+                if (r) {
+                    let authUser = {
+                        id: user._id,
+                        username: user.username,
+                        email: user.email
+                    };
+
+                    req.session.authUser = authUser;
+
+                    res.json({
+                        ok: true,
+                        user: authUser,
+                    })
+                } else {
+                    res.status(401).json({
+                        ok: false,
+                        message: 'Invalid username or password.'
+                    })
+                }
+            })
+        } else {
+            res.status(404).json({
+                ok: false,
+                message: 'User not found.'
+            })
+        }
+    }).catch(e => {
+        console.log(e);
+        res.status(500).json({
+            ok: false,
+            message: 'Internal server error.'
+        })
+    })
+});
+
+router.post('/logout', (req, res) => {
+    delete req.session.authUser;
+    res.json({ok: true})
+});
+
+router.post('/register', (req, res) => {
+    User.create({
+        username: req.body.username,
+        password: req.body.password,
+        email: req.body.email
+    }).then(() => res.json({ok: true})).catch(e => {
+        console.log(e);
+        res.status(500).json({
+            ok: false,
+            message: 'Internal server error.'
+        })
+    })
+});
+
+router.get('/api/posts/:page', (req, res) => {
+    Post.paginate({}, {
+        page: req.params.page ? parseInt(req.params.page) : 1,
+        populate: 'user',
+        limit: PAGE_LIMIT
+    }).then(res => res.json({
+        ok: true,
+        data: res
+    })).catch(e => {
+        console.log(e);
+        res.status(500).json({
+            ok: false,
+            message: 'Internal server error.'
+        })
+    })
+});
+
+router.post('/api/post', (req, res) => {
+    Post.create({
+        title: req.body.title,
+        content: req.body.title,
+        user: req.body.id
+    }).then(() => res.json({ok: true})).catch(e => {
+        console.log(e);
+        res.status(500).json({
+            ok: false,
+            message: 'Internal server error.'
+        })
+    })
+});
+
+router.get('/api/post/:slug', (req, res) => {
+    Post.findOne({
+        slug: req.params.slug
+    }).populate('user').then(post => {
+        if (post) {
+            res.json({
+                ok: true,
+                data: post
+            })
+        } else {
+            res.status(404).json({
+                ok: false,
+                message: 'Post can\'t be found.'
+            })
+        }
+    }).catch(e => {
+        console.log(e);
+        res.status(500).json({
+            ok: false,
+            message: 'Internal server error.'
+        })
+    })
+});
+
+router.put('/api/post/:slug', (req, res) => {
+    Post.findOneAndUpdate({
+        slug: req.params.slug
+    }, {
+        $set: {
+            title: req.body.title,
+            content: req.body.content
+        }
+    }, {new: true})
+        .then(() => {
+            res.json({ok: true})
+        })
+        .catch(e => {
+            console.log(e);
+            res.status(500).json({
+                ok: false,
+                message: 'Internal server error.'
+            })
+        })
+});
+
+router.delete('/api/post/:slug', (req, res) => {
+    Post.remove({
+        slug: req.params.slug
+    })
+        .then(() => res.json({ok: true}))
+        .catch(e => {
+            console.log(e);
+            res.status(500).json({
+                ok: false,
+                message: 'Internal server error.'
+            })
+        })
+});
+
+module.exports = router;

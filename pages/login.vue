@@ -32,14 +32,13 @@
     export default {
         data() {
             return {
-                error: null,
                 username: null,
                 password: null
             }
         },
         fetch({store, redirect}) {
             if (store.state.authUser)
-                redirect('/posts')
+                redirect('/')
         },
         methods: {
             login() {
