@@ -59,17 +59,34 @@ router.post('/logout', (req, res) => {
 });
 
 router.post('/register', (req, res) => {
-    User.create({
-        username: req.body.username,
-        password: req.body.password,
-        email: req.body.email
-    }).then(() => res.json({ok: true})).catch(e => {
+    User.findOne({
+        username: req.body.username
+    }).then(user => {
+        if (!user) {
+            User.create({
+                username: req.body.username,
+                password: req.body.password,
+                email: req.body.email
+            }).then(() => res.json({ok: true})).catch(e => {
+                console.log(e);
+                res.status(500).json({
+                    ok: false,
+                    message: 'Internal server error.'
+                })
+            })
+        } else {
+            res.status(500).json({
+                ok: false,
+                message: 'User already exists.'
+            })
+        }
+    }).catch(e => {
         console.log(e);
         res.status(500).json({
             ok: false,
             message: 'Internal server error.'
         })
-    })
+    });
 });
 
 router.get('/api/posts/:page?', (req, res) => {
@@ -110,7 +127,7 @@ router.get('/api/post/:slug', (req, res) => {
         if (post) {
             post.views += 1;
             post.save();
-            
+
             res.json({
                 ok: true,
                 data: post

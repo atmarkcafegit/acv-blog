@@ -36,6 +36,13 @@ export const actions = {
                 commit('SET_USER', null)
             })
     },
+    REGISTER({}, {username, password, email}) {
+        return axios.post(`${BASE_URL}/register`, {
+            username,
+            password,
+            email
+        })
+    },
     GET_POSTS({commit}) {
         return axios.get(`${BASE_URL}/api/posts`)
             .then(response => {

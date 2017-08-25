@@ -21,6 +21,7 @@
                         <span v-show="errors.has('password')" class="alert-danger">{{ errors.first('password') }}</span>
                     </div>
                     <button class="btn btn-primary">Login</button>
+                    <nuxt-link class="btn btn-default" to="/register" style="margin-left: 5px">Register</nuxt-link>
                     <hr>
                 </form>
             </div>
@@ -29,6 +30,7 @@
     </div>
 </template>
 <script>
+
     export default {
         data() {
             return {
@@ -43,8 +45,8 @@
         },
         methods: {
             login() {
-                this.$validator.validateAll();
                 this.errors.clear();
+                this.$validator.validateAll();
                 if (!this.errors.any()) {
                     this.$store.dispatch('LOGIN', {
                         username: this.username,
