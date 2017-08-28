@@ -48,8 +48,8 @@ export const actions = {
             email
         })
     },
-    GET_POSTS({commit}) {
-        return axios.get(`${BASE_URL}/api/posts`)
+    GET_POSTS({commit}, page) {
+        return axios.get(`${BASE_URL}/api/posts/${page ? page : ''}`)
             .then(response => {
                 if (response.data.ok)
                     commit('SET_POSTS', response.data.posts);
