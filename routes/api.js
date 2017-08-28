@@ -96,7 +96,7 @@ router.get('/api/posts/:page?', (req, res) => {
         limit: PAGE_LIMIT
     }).then(result => res.json({
         ok: true,
-        data: result
+        posts: result
     })).catch(e => {
         console.log(e);
         res.status(500).json({
@@ -130,7 +130,7 @@ router.get('/api/post/:slug', (req, res) => {
 
             res.json({
                 ok: true,
-                data: post
+                post: post
             })
         } else {
             res.status(404).json({

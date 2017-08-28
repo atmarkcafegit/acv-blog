@@ -4,7 +4,8 @@ const BASE_URL = 'http://localhost:3000';
 
 export const state = () => ({
     authUser: null,
-    posts: []
+    posts: [],
+    post: {}
 });
 
 export const mutations = {
@@ -13,6 +14,9 @@ export const mutations = {
     },
     SET_POSTS: function (state, posts) {
         state.posts = posts;
+    },
+    SET_POST: function (state, post) {
+        state.post = post;
     }
 };
 
@@ -47,7 +51,15 @@ export const actions = {
     GET_POSTS({commit}) {
         return axios.get(`${BASE_URL}/api/posts`)
             .then(response => {
-                commit('SET_POSTS', response.data);
+                if (response.data.ok)
+                    commit('SET_POSTS', response.data.posts);
+            });
+    },
+    GET_POST({commit}, slug) {
+        return axios.get(`${BASE_URL}/api/post/${slug}`)
+            .then(response => {
+                if (response.data.ok)
+                    commit('SET_POST', response.data.post);
             });
     }
 };
