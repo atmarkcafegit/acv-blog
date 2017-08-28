@@ -15,8 +15,10 @@
 
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        <nuxt-link tag="li" to="/posts"><a>POSTS</a></nuxt-link>
-                        <nuxt-link tag="li" to="/tags"><a>TAGS</a></nuxt-link>
+                        <nuxt-link v-for="t in tabs" :key="t.id" tag="li" :to="{path: t.path}"
+                                   :class="{active: isActive(t.path)}">
+                            <a>{{t.text}}</a>
+                        </nuxt-link>
                     </ul>
                     <div v-if="!isLoginPath && !isLogged" class="nav navbar-nav navbar-right">
                         <nuxt-link to="/login" class="btn btn-default btn-login">LOGIN</nuxt-link>
@@ -38,6 +40,14 @@
 </template>
 <script>
     export default {
+        data() {
+            return {
+                tabs: [
+                    {id: 0, text: 'POST', path: '/posts'},
+                    {id: 1, text: 'TAGS', path: '/tags'}
+                ]
+            }
+        },
         computed: {
             isLoginPath: function () {
                 return this.$route.fullPath === '/login'
@@ -47,6 +57,9 @@
             }
         },
         methods: {
+            isActive(path) {
+                return this.$route.fullPath === path;
+            },
             logout() {
                 this.$store.dispatch('LOGOUT')
                     .then(() => {
