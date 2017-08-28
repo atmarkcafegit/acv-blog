@@ -27,7 +27,8 @@ export const actions = {
             username,
             password
         }).then((res) => {
-            commit('SET_USER', res.data)
+            if (res.data.ok)
+                commit('SET_USER', res.data.user)
         });
     },
     LOGOUT({commit}) {

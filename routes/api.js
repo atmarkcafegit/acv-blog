@@ -109,7 +109,7 @@ router.get('/api/posts/:page?', (req, res) => {
 router.post('/api/post', (req, res) => {
     Post.create({
         title: req.body.title,
-        content: req.body.title,
+        content: req.body.content,
         user: req.body.id
     }).then(() => res.json({ok: true})).catch(e => {
         console.log(e);

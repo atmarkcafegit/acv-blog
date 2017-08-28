@@ -5,6 +5,11 @@
                 <nuxt-link v-if="isLogged" class="btn btn-default" to="/newpost">New Post</nuxt-link>
             </div>
         </div>
+       <div class="row">
+           <div class="col-md-8">
+
+           </div>
+       </div>
     </div>
 </template>
 <script>

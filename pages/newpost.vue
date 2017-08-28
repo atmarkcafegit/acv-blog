@@ -19,12 +19,19 @@
                                   style="height: 200px"></textarea>
                     </div>
                 </div>
+                <div class="row form-group">
+                    <div class="col-md-12 text-center">
+                        <a class="btn btn-default" @click="submit">Submit</a>
+                        <a style="margin-left: 5px" class="btn btn-default" @click="cancel">Cancel</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </template>
 <script>
     import VueMarkdown from 'vue-markdown'
+    import axios from 'axios'
 
     export default {
         middleware: 'auth',
@@ -35,6 +42,20 @@
             return {
                 title: '',
                 content: ''
+            }
+        },
+        methods: {
+            submit() {
+                axios.post('/api/post', {
+                    title: this.title,
+                    content: this.content,
+                    id: this.$store.state.authUser.id
+                }).then(() => {
+                    this.$router.push('/')
+                })
+            },
+            cancel() {
+                this.$router.push('/')
             }
         }
     }
