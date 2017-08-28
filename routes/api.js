@@ -125,6 +125,9 @@ router.get('/api/post/:slug', (req, res) => {
         slug: req.params.slug
     }).populate('user').then(post => {
         if (post) {
+            if (!post.views)
+                post.views = 0;
+            
             post.views += 1;
             post.save();
 
