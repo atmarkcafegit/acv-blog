@@ -60,8 +60,11 @@
 </template>
 <script>
     export default {
-        fetch({store, route}) {
-            return store.dispatch('GET_POSTS', route.params.page ? parseInt(route.params.page) : null);
+        fetch({store, route, redirect}) {
+            return store.dispatch('GET_POSTS', route.params.page ? parseInt(route.params.page) : null)
+                .catch(() => {
+                    redirect('/');
+                });
         },
         computed: {
             posts() {

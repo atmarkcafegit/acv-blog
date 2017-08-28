@@ -94,10 +94,18 @@ router.get('/api/posts/:page?', (req, res) => {
         page: req.params.page ? parseInt(req.params.page) : 1,
         populate: 'user',
         limit: PAGE_LIMIT
-    }).then(result => res.json({
-        ok: true,
-        posts: result
-    })).catch(e => {
+    }).then(result => {
+        if (result.docs.length === 0)
+            return res.status(404).json({
+                ok: false,
+                message: 'No post.'
+            });
+
+        res.json({
+            ok: true,
+            posts: result
+        });
+    }).catch(e => {
         console.log(e);
         res.status(500).json({
             ok: false,
@@ -127,7 +135,7 @@ router.get('/api/post/:slug', (req, res) => {
         if (post) {
             if (!post.views)
                 post.views = 0;
-            
+
             post.views += 1;
             post.save();
 
