@@ -1,7 +1,20 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const mongoosePaginate = require('mongoose-paginate');
+import * as mongoose from 'mongoose';
+import {Schema} from 'mongoose';
+
+import * as mongoosePaginate from 'mongoose-paginate';
+
 const monguurl = require('monguurl');
+
+export interface IPostModel extends mongoose.Document {
+    title: string,
+    slug: string,
+    content: string,
+    user: any,
+    views: number,
+    vote: number,
+    createdAt: Date,
+    updatedAt: Date
+}
 
 const PostSchema = new Schema({
     title: {type: String, required: true},
@@ -28,4 +41,4 @@ PostSchema.pre('save', next => {
 PostSchema.plugin(monguurl({source: 'title', target: 'slug'}));
 PostSchema.plugin(mongoosePaginate);
 
-module.exports = mongoose.model('Post', PostSchema);
+export const Post = mongoose.model<IPostModel>("Post", PostSchema);

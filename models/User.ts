@@ -1,10 +1,22 @@
-const mongoose = require('mongoose');
+import * as mongoose from 'mongoose';
+import {Schema} from 'mongoose';
+
 const bcrypt = require('bcrypt');
-const Schema = mongoose.Schema;
 
 const SALT_WORK_FACTOR = 10;
 
-const UserSchema = new Schema({
+export interface IUserModel extends mongoose.Document {
+    username: string,
+    password: string,
+    email: string,
+    posts: [any],
+    createdAt: Date,
+    updatedAt: Date,
+
+    comparePassword (candidatePassword: string, cb: Function);
+}
+
+export const UserSchema = new Schema({
     username: {type: String, required: true, index: {unique: true}},
     password: {type: String, required: true},
     email: {type: String},
@@ -47,4 +59,4 @@ UserSchema.methods.comparePassword = function (candidatePassword, cb) {
     });
 };
 
-module.exports = mongoose.model('User', UserSchema);
+export const User = mongoose.model<IUserModel>("User", UserSchema);

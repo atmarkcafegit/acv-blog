@@ -16,8 +16,8 @@ app.use(session({
     cookie: {maxAge: 1000 * 60 * 60 * 24}
 }));
 
-const api = require('./routes/api');
-app.use(api);
+import * as api from './routes/api';
+app.use(api.getRouter());
 
 let config = require('./nuxt.config.js');
 config.dev = !(process.env.NODE_ENV === 'production');

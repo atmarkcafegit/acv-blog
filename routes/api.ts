@@ -1,7 +1,8 @@
-const router = require('express').Router();
-const User = require('../models/User');
-const Post = require('../models/Post');
+import * as express from "express";
+import {User} from '../models/User';
+import {Post} from '../models/Post';
 
+const router = express.Router();
 const PAGE_LIMIT = 5;
 
 router.post('/login', (req, res) => {
@@ -197,4 +198,6 @@ router.delete('/api/post/:slug', (req, res) => {
         })
 });
 
-module.exports = router;
+export function getRouter() {
+    return router;
+}

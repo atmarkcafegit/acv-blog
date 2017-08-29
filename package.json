@@ -19,12 +19,18 @@
     "vue-markdown": "^2.2.4"
   },
   "scripts": {
-    "dev": "node server.js",
-    "build": "nuxt build",
-    "start": "cross-env NODE_ENV=production node server.js"
+    "dev": "backpack dev",
+    "build2": "backpack build",
+    "build": "nuxt build && backpack build",
+    "start": "nuxt start"
   },
   "devDependencies": {
+    "@types/mongoose": "^4.7.21",
+    "@types/mongoose-paginate": "^5.0.6",
+    "backpack-core": "^0.4.2",
     "stylus": "^0.54.5",
-    "stylus-loader": "^3.0.1"
+    "stylus-loader": "^3.0.1",
+    "ts-loader": "^2.3.4",
+    "typescript": "^2.4.2"
   }
 }

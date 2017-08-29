@@ -11,15 +11,23 @@ module.exports = {
             {rel: 'stylesheet', href: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'}
         ]
     },
-    router: {
-    },
+    router: {},
     loading: {
         color: 'green',
         height: '2px'
     },
-    plugins: ['~plugins/plugins.js'],
+    plugins: ['~plugins/plugins.ts'],
     build: {
-        vendor: ['axios', 'vuetify']
+        vendor: ['axios', 'vuetify'],
+        extend(config, {isClient}) {
+            config.module.rules.push({
+                test: /\.ts$/,
+                loader: 'ts-loader',
+                options: {
+                    appendTsSuffixTo: [/\.vue$/]
+                }
+            });
+        }
     },
     css: [
         {src: '~assets/style/app.styl', lang: 'styl'}

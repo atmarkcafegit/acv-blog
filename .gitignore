@@ -2,3 +2,4 @@
 .nuxt
 logs
 node_modules/
+build
