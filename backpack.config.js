@@ -7,7 +7,7 @@ module.exports = {
             loader: 'ts-loader'
         });
 
-        config.entry.main = './server.ts';
+        config.entry.main = './server/server.ts';
         return config
     }
 };

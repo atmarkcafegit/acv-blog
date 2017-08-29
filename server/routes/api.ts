@@ -5,7 +5,7 @@ import {Post} from '../models/Post';
 const router = express.Router();
 const PAGE_LIMIT = 5;
 
-router.post('/login', (req, res) => {
+router.post('/login', (req: any, res) => {
     User.findOne({
         username: req.body.username
     }).then(user => {
@@ -54,7 +54,7 @@ router.post('/login', (req, res) => {
     })
 });
 
-router.post('/logout', (req, res) => {
+router.post('/logout', (req: any, res) => {
     delete req.session.authUser;
     res.json({ok: true})
 });

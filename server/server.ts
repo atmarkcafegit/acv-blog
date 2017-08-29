@@ -20,7 +20,7 @@ import * as api from './routes/api';
 
 app.use(api.getRouter());
 
-let config = require('./nuxt.config.js');
+let config = require('../nuxt.config.js');
 config.dev = !(process.env.NODE_ENV === 'production');
 
 const mongoose = require('mongoose');
