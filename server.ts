@@ -17,6 +17,7 @@ app.use(session({
 }));
 
 import * as api from './routes/api';
+
 app.use(api.getRouter());
 
 let config = require('./nuxt.config.js');
@@ -29,11 +30,18 @@ mongoose.Promise = Q.Promise;
 
 mongoose.connect(uri).then(() => {
     let nuxt = new Nuxt(config);
-    new Builder(nuxt).build().then(() => {
+    if (config.dev) {
+        new Builder(nuxt).build().then(() => {
+            app.use(nuxt.render);
+            app.listen(port, host);
+            console.log('Server listening on ' + host + ':' + port)
+        });
+    } else {
         app.use(nuxt.render);
         app.listen(port, host);
-        console.log('Server listening on ' + host + ':' + port) // eslint-disable-line no-console
-    });
+        console.log('Server listening on ' + host + ':' + port)
+    }
+
 }, e => {
     console.log(e)
 });
