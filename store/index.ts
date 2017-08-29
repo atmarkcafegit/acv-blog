@@ -5,7 +5,8 @@ const BASE_URL = 'http://localhost:3000';
 export const state = () => ({
     authUser: null,
     posts: [],
-    post: {}
+    post: {},
+    comments: []
 });
 
 export const mutations = {
@@ -17,6 +18,9 @@ export const mutations = {
     },
     SET_POST: function (state, post) {
         state.post = post;
+    },
+    SET_COMMENTS: function (state, comments) {
+        state.comments = comments;
     }
 };
 
@@ -60,6 +64,13 @@ export const actions = {
             .then(response => {
                 if (response.data.ok)
                     commit('SET_POST', response.data.post);
+            });
+    },
+    ADD_COMMENT({commit}, comment) {
+        return axios.post(`${BASE_URL}/api/post/comment`, comment)
+            .then(response => {
+                if (response.data.ok)
+                    commit('SET_COMMENTS', response.data.comments);
             });
     }
 };

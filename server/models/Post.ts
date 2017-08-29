@@ -4,6 +4,7 @@ import {Schema} from 'mongoose';
 import * as mongoosePaginate from 'mongoose-paginate';
 
 const monguurl = require('monguurl');
+const mongooseDeepPopulate = require('mongoose-deep-populate')(mongoose);
 
 export interface IPostModel extends mongoose.Document {
     title: string,
@@ -12,6 +13,7 @@ export interface IPostModel extends mongoose.Document {
     user: any,
     views: number,
     vote: number,
+    comments: [any],
     createdAt: Date,
     updatedAt: Date
 }
@@ -23,6 +25,7 @@ const PostSchema = new Schema({
     user: {type: Schema.Types.ObjectId, ref: 'User'},
     views: {type: Number},
     vote: {type: Number},
+    comments: [{type: Schema.Types.ObjectId, ref: 'Comment'}],
     createdAt: {type: Date},
     updatedAt: {type: Date}
 });
@@ -40,5 +43,6 @@ PostSchema.pre('save', next => {
 
 PostSchema.plugin(monguurl({source: 'title', target: 'slug'}));
 PostSchema.plugin(mongoosePaginate);
+//PostSchema.plugin(mongooseDeepPopulate);
 
 export const Post = mongoose.model<IPostModel>("Post", PostSchema);

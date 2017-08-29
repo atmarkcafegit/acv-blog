@@ -17,6 +17,7 @@ app.use(session({
 }));
 
 import * as api from './routes/api';
+import {Post} from './models/Post';
 
 app.use(api.getRouter());
 
@@ -28,7 +29,19 @@ const Q = require('q');
 const uri = 'mongodb://localhost:27017/acv_blog';
 mongoose.Promise = Q.Promise;
 
+
 mongoose.connect(uri).then(() => {
+
+    // Post.findOne({
+    //     _id: '59a3ca4740bad322183c454b'
+    // })
+    //     .populate({
+    //         path: 'comments'
+    //     })
+    //     .exec((err, datas) => {
+    //         console.log(datas);
+    //     })
+
     let nuxt = new Nuxt(config);
     if (config.dev) {
         new Builder(nuxt).build().then(() => {

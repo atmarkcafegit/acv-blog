@@ -49,7 +49,7 @@
                 axios.post('/api/post', {
                     title: this.title,
                     content: this.content,
-                    id: this.$store.state.authUser.id
+                    userId: this.$store.state.authUser._id
                 }).then(() => {
                     this.$router.push('/')
                 })

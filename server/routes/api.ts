@@ -1,6 +1,7 @@
 import * as express from "express";
 import {User} from '../models/User';
 import {Post} from '../models/Post';
+import {Comment} from '../models/Comment';
 
 const router = express.Router();
 const PAGE_LIMIT = 5;
@@ -21,7 +22,7 @@ router.post('/login', (req: any, res) => {
 
                 if (r) {
                     let authUser = {
-                        id: user._id,
+                        _id: user._id,
                         username: user.username,
                         email: user.email
                     };
@@ -119,7 +120,7 @@ router.post('/api/post', (req, res) => {
     Post.create({
         title: req.body.title,
         content: req.body.content,
-        user: req.body.id
+        user: req.body.userId
     }).then(() => res.json({ok: true})).catch(e => {
         console.log(e);
         res.status(500).json({
@@ -132,7 +133,7 @@ router.post('/api/post', (req, res) => {
 router.get('/api/post/:slug', (req, res) => {
     Post.findOne({
         slug: req.params.slug
-    }).populate('user').then(post => {
+    }).populate('user', ['username', '_id', 'email']).then(post => {
         if (post) {
             if (!post.views)
                 post.views = 0;
@@ -159,8 +160,35 @@ router.get('/api/post/:slug', (req, res) => {
     })
 });
 
-router.post('/api/post/:slug/vote', (req, res) => {
+router.post('/api/post/vote', (req, res) => {
 
+});
+
+router.post('/api/post/comment', (req, res) => {
+    console.log(req.body);
+    Comment.create({
+        content: req.body.content,
+        user: req.body.userId,
+        post: req.body.postId
+    }).then(() => {
+        Post.findOne({
+            _id: req.body.postId
+        })
+            .populate('comments')
+            .then(result => {
+                console.log(result);
+                res.json({
+                    ok: true,
+                    comments: result
+                })
+            })
+    }).catch(e => {
+        console.log(e);
+        res.status(500).json({
+            ok: false,
+            message: 'Internal server error.'
+        })
+    })
 });
 
 router.put('/api/post/:slug', (req, res) => {
