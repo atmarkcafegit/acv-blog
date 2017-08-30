@@ -18,7 +18,7 @@ module.exports = {
     },
     plugins: ['~plugins/plugins.ts'],
     build: {
-        vendor: ['axios', 'vuetify'],
+        vendor: ['axios'],
         extend(config, {isClient}) {
             config.module.rules.push({
                 test: /\.ts$/,
