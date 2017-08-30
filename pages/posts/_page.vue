@@ -5,7 +5,7 @@
                 <nuxt-link v-if="isLogged" class="btn btn-default" to="/newpost">New Post</nuxt-link>
             </div>
         </div>
-        <div class="row" style="margin-top: 5px">
+        <div class="row" style="margin-top: 5px" >
             <div class="col-md-8">
                 <div v-for="post, index in posts" class="panel panel-default">
                     <div class="panel-body">
@@ -18,7 +18,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row" v-if="!!posts && posts.length > 0">
             <div class="col-md-8 text-center">
                 <ul class="pagination">
                     <li>
@@ -60,10 +60,9 @@
 </template>
 <script>
     export default {
-        fetch({store, route, redirect}) {
+        fetch({store, route}) {
             return store.dispatch('GET_POSTS', route.params.page ? parseInt(route.params.page) : null)
                 .catch(() => {
-                    redirect('/');
                 });
         },
         computed: {

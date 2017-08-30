@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 import {Schema} from 'mongoose';
+import {IPostModel} from './Post'
 
 const bcrypt = require('bcrypt');
 
@@ -9,7 +10,7 @@ export interface IUserModel extends mongoose.Document {
     username: string,
     password: string,
     email: string,
-    posts: [any],
+    posts: Array<IPostModel>,
     createdAt: Date,
     updatedAt: Date,
 

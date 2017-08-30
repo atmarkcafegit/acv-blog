@@ -1,3 +1,5 @@
+import * as api from './routes/api';
+
 const {Nuxt, Builder} = require('nuxt');
 const bodyParser = require('body-parser');
 const session = require('express-session');
@@ -16,9 +18,6 @@ app.use(session({
     cookie: {maxAge: 1000 * 60 * 60 * 24}
 }));
 
-import * as api from './routes/api';
-import {Post} from './models/Post';
-
 app.use(api.getRouter());
 
 let config = require('../nuxt.config.js');
@@ -32,11 +31,11 @@ mongoose.Promise = Q.Promise;
 
 mongoose.connect(uri).then(() => {
 
-    // Post.findOne({
-    //     _id: '59a3ca4740bad322183c454b'
+    // User.findOne({
+    //     username: 'minhdtb'
     // })
     //     .populate({
-    //         path: 'comments'
+    //         path: 'posts'
     //     })
     //     .exec((err, datas) => {
     //         console.log(datas);

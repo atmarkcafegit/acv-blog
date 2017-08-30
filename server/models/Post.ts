@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import {Schema} from 'mongoose';
-
+import {ICommentModel} from './Comment';
 import * as mongoosePaginate from 'mongoose-paginate';
 
 const monguurl = require('monguurl');
@@ -13,7 +13,7 @@ export interface IPostModel extends mongoose.Document {
     user: any,
     views: number,
     vote: number,
-    comments: [any],
+    comments: Array<ICommentModel>,
     createdAt: Date,
     updatedAt: Date
 }
@@ -43,6 +43,6 @@ PostSchema.pre('save', next => {
 
 PostSchema.plugin(monguurl({source: 'title', target: 'slug'}));
 PostSchema.plugin(mongoosePaginate);
-//PostSchema.plugin(mongooseDeepPopulate);
+PostSchema.plugin(mongooseDeepPopulate);
 
 export const Post = mongoose.model<IPostModel>("Post", PostSchema);

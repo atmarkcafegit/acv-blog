@@ -36,7 +36,7 @@
                         <span v-show="errors.has('email')"
                               class="alert-danger">{{ errors.first('email') }}</span>
                     </div>
-                    <button class="btn btn-primary" @click="register">Submit</button>
+                    <button class="btn btn-primary">Submit</button>
                     <nuxt-link class="btn btn-default" style="margin-left: 5px" to="/login">Cancel</nuxt-link>
                     <hr>
                 </form>
@@ -59,18 +59,23 @@
         methods: {
             register() {
                 this.errors.clear();
-                this.$validator.validateAll();
-                if (!this.errors.any()) {
-                    this.$store.dispatch('REGISTER', {
-                        username: this.username,
-                        password: this.password,
-                        email: this.email
-                    }).then(() => {
-                        this.$router.push('/login')
-                    }).catch(e => {
-                        this.errors.add('error', e.response.data.message);
-                    })
-                }
+                this.$validator.validateAll().then(() => {
+                    if (!this.errors.any()) {
+                        if (this.password !== this.confirmPassword) {
+                            this.errors.add('confirmPassword', 'Password and confirm password does not match.');
+                        } else {
+                            this.$store.dispatch('REGISTER', {
+                                username: this.username,
+                                password: this.password,
+                                email: this.email
+                            }).then(() => {
+                                this.$router.push('/login')
+                            }).catch(e => {
+                                this.errors.add('error', e.response.data.message);
+                            })
+                        }
+                    }
+                });
             }
         }
     }

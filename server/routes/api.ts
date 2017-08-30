@@ -121,7 +121,22 @@ router.post('/api/post', (req, res) => {
         title: req.body.title,
         content: req.body.content,
         user: req.body.userId
-    }).then(() => res.json({ok: true})).catch(e => {
+    }).then(post => {
+        return User.findById(req.body.userId)
+            .then(user => {
+                if (user) {
+                    user.posts.push(post);
+                    user.save().then(() => {
+                        res.json({ok: true});
+                    });
+                } else {
+                    res.status(404).json({
+                        ok: false,
+                        message: 'User not found.'
+                    })
+                }
+            })
+    }).catch(e => {
         console.log(e);
         res.status(500).json({
             ok: false,
@@ -148,7 +163,7 @@ router.get('/api/post/:slug', (req, res) => {
         } else {
             res.status(404).json({
                 ok: false,
-                message: 'Post can\'t be found.'
+                message: 'Post not found.'
             })
         }
     }).catch(e => {
@@ -165,22 +180,29 @@ router.post('/api/post/vote', (req, res) => {
 });
 
 router.post('/api/post/comment', (req, res) => {
-    console.log(req.body);
     Comment.create({
         content: req.body.content,
         user: req.body.userId,
         post: req.body.postId
-    }).then(() => {
-        Post.findOne({
-            _id: req.body.postId
-        })
+    }).then(comment => {
+        return Post
+            .findById(req.body.postId)
             .populate('comments')
-            .then(result => {
-                console.log(result);
-                res.json({
-                    ok: true,
-                    comments: result
-                })
+            .then(post => {
+                if (post) {
+                    post.comments.push(comment);
+                    post.save().then(() => {
+                        res.json({
+                            ok: true,
+                            comments: post.comments
+                        })
+                    })
+                } else {
+                    res.status(404).json({
+                        ok: false,
+                        message: 'Post not found.'
+                    })
+                }
             })
     }).catch(e => {
         console.log(e);
