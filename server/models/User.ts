@@ -60,4 +60,10 @@ UserSchema.methods.comparePassword = function (candidatePassword, cb) {
     });
 };
 
+UserSchema.methods.toJSON = function () {
+    let obj = this.toObject();
+    delete obj.password;
+    return obj
+};
+
 export const User = mongoose.model<IUserModel>("User", UserSchema);

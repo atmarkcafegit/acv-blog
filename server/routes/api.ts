@@ -146,27 +146,29 @@ router.post('/api/post', (req, res) => {
 });
 
 router.get('/api/post/:slug', (req, res) => {
-    Post.findOne({
+    (Post.findOne({
         slug: req.params.slug
-    }).populate('user', ['username', '_id', 'email']).then(post => {
-        if (post) {
-            if (!post.views)
-                post.views = 0;
+    }) as any)
+        .deepPopulate(['user', 'comments', 'comments.user'])
+        .then(post => {
+            if (post) {
+                if (!post.views)
+                    post.views = 0;
 
-            post.views += 1;
-            post.save();
+                post.views += 1;
+                post.save();
 
-            res.json({
-                ok: true,
-                post: post
-            })
-        } else {
-            res.status(404).json({
-                ok: false,
-                message: 'Post not found.'
-            })
-        }
-    }).catch(e => {
+                res.json({
+                    ok: true,
+                    post: post
+                })
+            } else {
+                res.status(404).json({
+                    ok: false,
+                    message: 'Post not found.'
+                })
+            }
+        }).catch(e => {
         console.log(e);
         res.status(500).json({
             ok: false,
@@ -185,9 +187,9 @@ router.post('/api/post/comment', (req, res) => {
         user: req.body.userId,
         post: req.body.postId
     }).then(comment => {
-        return Post
-            .findById(req.body.postId)
-            .populate('comments')
+        return (Post
+            .findById(req.body.postId) as any)
+            .deepPopulate(['comments'])
             .then(post => {
                 if (post) {
                     post.comments.push(comment);

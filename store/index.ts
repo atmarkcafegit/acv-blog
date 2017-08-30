@@ -62,8 +62,10 @@ export const actions = {
     GET_POST({commit}, slug) {
         return axios.get(`${BASE_URL}/api/post/${slug}`)
             .then(response => {
-                if (response.data.ok)
+                if (response.data.ok) {
                     commit('SET_POST', response.data.post);
+                    commit('SET_COMMENTS', response.data.post.comments);
+                }
             });
     },
     ADD_COMMENT({commit}, comment) {

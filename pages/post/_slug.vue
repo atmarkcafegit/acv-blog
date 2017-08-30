@@ -14,11 +14,18 @@
         <div class="row" style="margin-top: 10px">
             <div class="col-md-8">
                 <textarea v-model="content" class="form-control" placeholder="Comment..."></textarea>
-                <a class="btn btn-default" style="margin-top: 10px" @click="addComment">Add Comment</a>
+                <a :disabled="!isLogged" class="btn btn-default" style="margin-top: 10px" @click="addComment">Add Comment</a>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-8"></div>
+        <div class="row" style="margin-top: 10px">
+            <div class="col-md-8">
+                <div class="panel panel-default" v-for="comment in comments">
+                    <div class="panel-body">
+                        {{comment.content}}<br>
+                        Author: {{comment.user.username ? comment.user.username : $store.state.authUser.username}}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -40,6 +47,12 @@
         computed: {
             post() {
                 return this.$store.state.post;
+            },
+            comments() {
+                return this.$store.state.comments;
+            },
+            isLogged: function () {
+                return !!this.$store.state.authUser;
             }
         },
         methods: {
@@ -49,7 +62,7 @@
                     userId: this.$store.state.authUser._id,
                     postId: this.$store.state.post._id
                 }).then(() => {
-                    console.log(this.$store.state.comments)
+                    this.content = '';
                 })
             }
         }

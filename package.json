@@ -3,6 +3,7 @@
   "description": "Atmarkcafe Blog",
   "dependencies": {
     "@types/async": "^2.0.42",
+    "@types/lodash": "^4.14.74",
     "async": "^2.5.0",
     "axios": "^0.16.1",
     "bcrypt": "^1.0.3",
