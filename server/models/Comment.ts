@@ -19,7 +19,7 @@ export const CommentSchema = new Schema({
     updatedAt: {type: Date}
 });
 
-CommentSchema.pre('save', next => {
+CommentSchema.pre('save', function (next) {
     let now = new Date();
 
     this.updatedAt = now;

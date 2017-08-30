@@ -3,6 +3,8 @@
         <div class="row">
             <div class="col-md-8">
                 <h2>{{post.title}}</h2>
+                <h5>Author: {{post.user.username}}</h5>
+                <h5>Date: {{post.createdAt}}</h5>
                 <vue-markdown>{{post.content}}</vue-markdown>
             </div>
         </div>
