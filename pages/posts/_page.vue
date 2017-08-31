@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <nuxt-link v-if="isLogged" class="btn btn-default btn-primary" to="/newpost" style="margin-top: 20px">New Post</nuxt-link>
+        <nuxt-link v-if="isLogged" class="btn btn-default btn-primary" to="/post/new" style="margin-top: 20px">New Post</nuxt-link>
         <div class="clearfix"></div>
         <hr>
         <div class="row homepage-version">
