@@ -30,6 +30,7 @@ module.exports = {
         }
     },
     css: [
+        {src: '~assets/style/theme.css', lang: 'css'},
         {src: '~assets/style/app.styl', lang: 'styl'}
     ]
 };
