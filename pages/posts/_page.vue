@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <nuxt-link v-if="isLogged" class="btn btn-default" to="/newpost">New Post</nuxt-link>
+                <nuxt-link v-if="isLogged" class="btn btn-default" to="/post/new">New Post</nuxt-link>
             </div>
         </div>
         <div class="row" style="margin-top: 5px" >
