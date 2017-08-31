@@ -4,19 +4,12 @@
             <div class="col-md-8">
                 <div class="row form-group">
                     <div class="col-md-12">
-                        <h2>{{title}}</h2>
-                        <vue-markdown :source="content"></vue-markdown>
-                    </div>
-                </div>
-                <div class="row form-group">
-                    <div class="col-md-12">
                         <input class="form-control" v-model="title" placeholder="Title..."/>
                     </div>
                 </div>
                 <div class="row form-group">
                     <div class="col-md-12">
-                        <textarea class="form-control" placeholder="Content..." v-model="content"
-                                  style="height: 200px"></textarea>
+                        <markdown-editor v-model="content"></markdown-editor>
                     </div>
                 </div>
                 <div class="row form-group">
@@ -30,18 +23,19 @@
     </div>
 </template>
 <script>
-    import VueMarkdown from 'vue-markdown'
+    import editor from '../../components/editor.vue'
     import axios from 'axios'
 
     export default {
         middleware: 'auth',
         components: {
-            VueMarkdown
+            editor
         },
         data() {
             return {
                 title: '',
-                content: ''
+                content: '',
+                test: null
             }
         },
         methods: {

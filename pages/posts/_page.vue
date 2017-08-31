@@ -96,7 +96,6 @@
 </template>
 <script>
     export default {
-        layout: 'default',
         fetch({store, route}) {
             return store.dispatch('GET_POSTS', route.params.page ? parseInt(route.params.page) : null)
                 .catch(() => {

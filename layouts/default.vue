@@ -98,6 +98,10 @@
                 ]
             }
         },
+        beforeCreate: function() {
+            if (typeof document !== 'undefined')
+                document.body.className = '';
+        },
         computed: {
             isLoginPath: function () {
                 return this.$route.fullPath === '/login'

@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container login">
         <div class="row">
             <div class="col-sm-6 col-sm-offset-3">
                 <div class="panel panel-default">
@@ -9,15 +9,23 @@
         </div>
     </div>
 </template>
-
+<script>
+    export default {
+        beforeCreate: function () {
+            if (typeof document !== 'undefined')
+                document.body.className = 'login';
+        }
+    }
+</script>
 <style>
-    html, body {
+    html.login, body.login {
         height: 100%;
         background: url(~/static/background-login.jpg);
         background-position: center top;
         background-size: 100% auto;
     }
-    .container {
+
+    .login.container {
         position: absolute;
         top: 50%;
         left: 50%;
