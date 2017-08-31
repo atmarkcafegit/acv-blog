@@ -1,37 +1,32 @@
 <template>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4"></div>
-            <div class="col-md-4">
-                <h1>Login</h1>
-                <hr>
-                <form v-on:submit.prevent="login">
-                    <span v-show="errors.has('error')" class="alert-danger">{{ errors.first('error') }}</span>
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input v-validate.disabled data-vv-rules="required" class="form-control"
-                               v-model="username" name="username" id="username" placeholder="Username"
-                               data-vv-as="username">
-                        <span v-show="errors.has('username')" class="alert-danger">{{ errors.first('username') }}</span>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input v-validate.disabled data-vv-rules="required" name="password" type="password"
-                               class="form-control" v-model="password" id="password" placeholder="********">
-                        <span v-show="errors.has('password')" class="alert-danger">{{ errors.first('password') }}</span>
-                    </div>
-                    <button class="btn btn-primary">Login</button>
-                    <nuxt-link class="btn btn-default" to="/register" style="margin-left: 5px">Register</nuxt-link>
-                    <hr>
-                </form>
+    <div class="panel-body">
+        <h1>Login</h1>
+        <hr>
+        <form v-on:submit.prevent="login">
+            <span v-show="errors.has('error')" class="alert-danger">{{ errors.first('error') }}</span>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input v-validate.disabled data-vv-rules="required" class="form-control"
+                       v-model="username" name="username" id="username" placeholder="Username"
+                       data-vv-as="username">
+                <span v-show="errors.has('username')" class="alert-danger">{{ errors.first('username') }}</span>
             </div>
-            <div class="col-md-4"></div>
-        </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input v-validate.disabled data-vv-rules="required" name="password" type="password"
+                       class="form-control" v-model="password" id="password" placeholder="********">
+                <span v-show="errors.has('password')" class="alert-danger">{{ errors.first('password') }}</span>
+            </div>
+            <button class="btn btn-primary">Login</button>
+            <nuxt-link class="btn btn-default" to="/register" style="margin-left: 5px">Register</nuxt-link>
+            <hr>
+        </form>
     </div>
 </template>
 <script>
 
     export default {
+        layout: 'login',
         data() {
             return {
                 error: null,

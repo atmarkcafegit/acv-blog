@@ -1,23 +1,59 @@
 <template>
     <div class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <nuxt-link v-if="isLogged" class="btn btn-default" to="/newpost">New Post</nuxt-link>
-            </div>
-        </div>
-        <div class="row" style="margin-top: 5px" >
-            <div class="col-md-8">
-                <div v-for="post, index in posts" class="panel panel-default">
-                    <div class="panel-body">
-                        <router-link :to="{path: '/post/' + post.slug}">
-                            <h4 class="title"> {{post.title}}</h4>
-                        </router-link>
-                        <br>
-                        <span class="user">Author: {{post.user.username}}</span>
+        <nuxt-link v-if="isLogged" class="btn btn-default btn-primary" to="/newpost" style="margin-top: 20px">New Post</nuxt-link>
+        <div class="clearfix"></div>
+        <hr>
+        <div class="row homepage-version">
+            <div class="col-md-9 col-sm-12 col-xs-12 m22">
+                <div class="widget searchwidget">
+                    <div v-for="post, index in posts" class="large-widget m30">
+                        <div class="post row clearfix">
+                            <div class="col-md-2">
+                                <div class="post-media">
+                                    <router-link :to="{path: '/post/' + post.slug}">
+                                        <div class="post-category post-php" v-if="Math.random() < 0.5">
+                                            <span>PHP</span>
+                                        </div>
+                                        <div class="post-category post-html" v-else>
+                                            <span>HTML</span>
+                                        </div>
+                                    </router-link>
+                                </div>
+                            </div>
+
+                            <div class="col-md-10">
+                                <div class="title-area">
+                                    <div class="colorfulcats">
+                                        <a href="#"><span class="label label-primary">Interview</span></a>
+                                        <a href="#"><span class="label label-warning">Web Design</span></a>
+                                    </div>
+                                    <router-link :to="{path: '/post/' + post.slug}">
+                                        <h3> {{post.title}}</h3>
+                                    </router-link>
+                                    <div> {{ post.content | shortDescription(150) }} </div>
+
+                                    <div class="large-post-meta">
+                                        <span class="avatar"><a href="#"><img src="" alt="" class="img-circle"> {{ post.user.username }}</a></span>
+                                        <small>&#124;</small>
+                                        <span><a href="#"><i class="fa fa-clock-o"></i> {{ post.user.createdAt | dateFormat }}</a></span>
+                                        <small class="hidden-xs">&#124;</small>
+                                        <span class="hidden-xs"><a href="#"><i class="fa fa-comments-o"></i> {{ post.user.comments }} </a></span>
+                                        <small class="hidden-xs">&#124;</small>
+                                        <span class="hidden-xs"><a href="#"><i class="fa fa-eye"></i> {{ post.user.views }}</a></span>
+                                    </div>
+                                    <!-- end meta -->
+                                </div>
+                                <!-- /.pull-right -->
+                            </div>
+                        </div>
+                        <!-- end post -->
+                        <hr>
                     </div>
+                    <!-- end large-widget -->
                 </div>
             </div>
         </div>
+
         <div class="row" v-if="!!posts && posts.length > 0">
             <div class="col-md-8 text-center">
                 <ul class="pagination">
@@ -60,6 +96,7 @@
 </template>
 <script>
     export default {
+        layout: 'default',
         fetch({store, route}) {
             return store.dispatch('GET_POSTS', route.params.page ? parseInt(route.params.page) : null)
                 .catch(() => {
