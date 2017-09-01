@@ -81,4 +81,4 @@ function getRandomInt(min, max) {
 PostSchema.plugin(mongoosePaginate);
 PostSchema.plugin(mongooseDeepPopulate);
 
-export const Post = mongoose.model<IPostModel>("Post", PostSchema);
+export const PostModel = mongoose.model<IPostModel>("Post", PostSchema);

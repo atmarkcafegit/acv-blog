@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import {Schema} from 'mongoose';
-import {IPostModel} from './Post'
+import {IPostModel} from './PostModel'
 
 const bcrypt = require('bcrypt');
 
@@ -61,4 +61,4 @@ UserSchema.methods.toJSON = function () {
     return obj
 };
 
-export const User = mongoose.model<IUserModel>("User", UserSchema);
+export const UserModel = mongoose.model<IUserModel>("User", UserSchema);
