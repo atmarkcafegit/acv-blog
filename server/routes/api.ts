@@ -6,54 +6,54 @@ import {Comment} from '../models/Comment';
 const router = express.Router();
 const PAGE_LIMIT = 5;
 
-router.post('/login', (req: any, res) => {
-    User.findOne({
-        username: req.body.username
-    }).then(user => {
-        if (user) {
-            user.comparePassword(req.body.password, (error, r) => {
-                if (error) {
-                    console.log(r);
-                    res.status(500).json({
-                        ok: false,
-                        message: 'Internal server error.'
-                    })
-                }
-
-                if (r) {
-                    let authUser = {
-                        _id: user._id,
-                        username: user.username,
-                        email: user.email
-                    };
-
-                    req.session.authUser = authUser;
-
-                    res.json({
-                        ok: true,
-                        user: authUser,
-                    })
-                } else {
-                    res.status(401).json({
-                        ok: false,
-                        message: 'Invalid username or password.'
-                    })
-                }
-            })
-        } else {
-            res.status(404).json({
-                ok: false,
-                message: 'User not found.'
-            })
-        }
-    }).catch(e => {
-        console.log(e);
-        res.status(500).json({
-            ok: false,
-            message: 'Internal server error.'
-        })
-    })
-});
+// router.post('/login', (req: any, res) => {
+//     User.findOne({
+//         username: req.body.username
+//     }).then(user => {
+//         if (user) {
+//             user.comparePassword(req.body.password, (error, r) => {
+//                 if (error) {
+//                     console.log(r);
+//                     res.status(500).json({
+//                         ok: false,
+//                         message: 'Internal server error.'
+//                     })
+//                 }
+//
+//                 if (r) {
+//                     let authUser = {
+//                         _id: user._id,
+//                         username: user.username,
+//                         email: user.email
+//                     };
+//
+//                     req.session.authUser = authUser;
+//
+//                     res.json({
+//                         ok: true,
+//                         user: authUser,
+//                     })
+//                 } else {
+//                     res.status(401).json({
+//                         ok: false,
+//                         message: 'Invalid username or password.'
+//                     })
+//                 }
+//             })
+//         } else {
+//             res.status(404).json({
+//                 ok: false,
+//                 message: 'User not found.'
+//             })
+//         }
+//     }).catch(e => {
+//         console.log(e);
+//         res.status(500).json({
+//             ok: false,
+//             message: 'Internal server error.'
+//         })
+//     })
+// });
 
 router.post('/logout', (req: any, res) => {
     delete req.session.authUser;

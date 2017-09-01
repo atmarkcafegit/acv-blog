@@ -14,7 +14,7 @@ export interface IUserModel extends mongoose.Document {
     createdAt: Date,
     updatedAt: Date,
 
-    comparePassword (candidatePassword: string, cb: Function);
+    comparePassword (candidatePassword: string);
 }
 
 export const UserSchema = new Schema({
@@ -51,13 +51,8 @@ UserSchema.pre('save', function (next) {
     });
 });
 
-UserSchema.methods.comparePassword = function (candidatePassword, cb) {
-    bcrypt.compare(candidatePassword, this.password, (error, isMatch) => {
-        if (error)
-            return cb(error);
-
-        cb(null, isMatch);
-    });
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+   return await bcrypt.compare(candidatePassword, this.password);
 };
 
 UserSchema.methods.toJSON = function () {
