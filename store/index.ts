@@ -6,7 +6,8 @@ export const state = () => ({
     authUser: null,
     posts: [],
     post: {},
-    comments: []
+    comments: [],
+    authors: []
 });
 
 export const mutations = {
@@ -21,7 +22,10 @@ export const mutations = {
     },
     SET_COMMENTS: function (state, comments) {
         state.comments = comments;
-    }
+    },
+    SET_HOT_AUTHORS: function (state, authors) {
+        state.authors = authors;
+    },
 };
 
 export const actions = {
@@ -73,6 +77,13 @@ export const actions = {
             .then(response => {
                 if (response.data.ok)
                     commit('SET_COMMENTS', response.data.comments);
+            });
+    },
+    GET_HOT_AUTHORS({commit}) {
+        return axios.get(`${BASE_URL}/api/author/hot`)
+            .then(response => {
+                if (response.data.ok)
+                    commit('SET_HOT_AUTHORS', response.data.authors);
             });
     }
 };

@@ -2,7 +2,7 @@
     <div class="container">
         <nuxt-link v-if="isLogged" class="btn btn-default btn-primary" to="/post/new" style="margin-top: 20px">New Post</nuxt-link>
         <div class="clearfix"></div>
-        <hr>
+        <hr v-if="isLogged" >
         <div class="row homepage-version">
             <div class="col-md-9 col-sm-12 col-xs-12 m22">
                 <div class="widget searchwidget">
@@ -37,9 +37,9 @@
                                         <small>&#124;</small>
                                         <span><a href="#"><i class="fa fa-clock-o"></i> {{ post.user.createdAt | dateFormat }}</a></span>
                                         <small class="hidden-xs">&#124;</small>
-                                        <span class="hidden-xs"><a href="#"><i class="fa fa-comments-o"></i> {{ post.user.comments }} </a></span>
+                                        <span class="hidden-xs"><a href="#"><i class="fa fa-comments-o"></i> {{ post.comments | countData }} </a></span>
                                         <small class="hidden-xs">&#124;</small>
-                                        <span class="hidden-xs"><a href="#"><i class="fa fa-eye"></i> {{ post.user.views }}</a></span>
+                                        <span class="hidden-xs"><a href="#"><i class="fa fa-eye"></i> {{ post.views }}</a></span>
                                     </div>
                                     <!-- end meta -->
                                 </div>
@@ -50,6 +50,38 @@
                         <hr>
                     </div>
                     <!-- end large-widget -->
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-12 col-xs-12 ">
+                <div class="widget">
+                    <div class="widget-title">
+                        <h4>Hot Authors</h4>
+                        <hr>
+                    </div>
+                    <!-- end widget-title -->
+
+                    <div class="social-media-widget m30">
+                        <div class="ui selection list ranking-users">
+                            <!-- Item -->
+                            <div v-for="author, index in authors" class="item" style="margin-bottom: 10px">
+                                <div class="block">
+                                    <div class="inner avatar"></div>
+                                    <div class="inner"><a href="#">{{ author.username }}</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end social -->
+
+                    <div class="widget-title">
+                        <h4>Top Views</h4>
+                        <hr>
+                    </div>
+
+                    <div class="widget-title">
+                        <h4>Hot Tags</h4>
+                        <hr>
+                    </div>
                 </div>
             </div>
         </div>
@@ -96,8 +128,12 @@
 </template>
 <script>
     export default {
-        fetch({store, route}) {
-            return store.dispatch('GET_POSTS', route.params.page ? parseInt(route.params.page) : null)
+        async fetch({store, route}) {
+            await store.dispatch('GET_POSTS', route.params.page ? parseInt(route.params.page) : null)
+                .catch(() => {
+                });
+
+            await store.dispatch('GET_HOT_AUTHORS')
                 .catch(() => {
                 });
         },
@@ -110,6 +146,10 @@
             },
             isLogged: function () {
                 return !!this.$store.state.authUser;
+            },
+            authors() {
+                console.log(this.$store.state.authors);
+                return this.$store.state.authors;
             }
         },
         methods: {

@@ -16,3 +16,9 @@ Vue.filter('dateFormat', function(value) {
     return moment(value).format('MMMM Do YYYY');
 });
 
+Vue.filter('countData', function(value) {
+    return value.length;
+});
+
+
+

@@ -250,6 +250,40 @@ router.delete('/api/post/:slug', (req, res) => {
         })
 });
 
+router.get('/api/author/hot', (req, res) => {
+    Post.aggregate(
+        { $group: {_id: '$user', numberViews: {$sum: '$views'}}},
+        { $sort: {numberViews: -1} },
+        { $limit : 5 }
+    ).then(result => {
+        if (result.length === 0)
+            return res.status(404).json({
+                ok: false,
+                message: 'No author.'
+            });
+
+        let user: string[] = [];
+
+        for (let i = 0, len = result.length; i < len; i++) {
+            user.push(result[i]['_id']);
+        }
+
+        User.find({ _id: { "$in" : user} }).then(users => {
+                res.json({
+                    ok: true,
+                    authors: users
+                });
+            }
+        );
+    }).catch(e => {
+        console.log(e);
+        res.status(500).json({
+            ok: false,
+            message: 'Internal server error.'
+        })
+    })
+});
+
 export function getRouter() {
     return router;
 }
