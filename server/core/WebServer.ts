@@ -1,16 +1,16 @@
-import {HttpServer} from "./base/HttpServer";
-import * as express from "express";
-import * as _ from "lodash";
-import {HttpMethod} from "./common/HttpMethod";
-import {buildUrl} from "./common/Route";
-import {View} from "./common/View";
-import * as compression from 'compression';
-import * as helmet from 'helmet';
-import * as bodyParser from "body-parser";
-import * as cookieParser from "cookie-parser";
-import * as  session from 'express-session';
-import {Error} from "./common/Error";
-import "reflect-metadata";
+import {HttpServer} from "./base/HttpServer"
+import * as express from "express"
+import * as _ from "lodash"
+import {HttpMethod} from "./common/HttpMethod"
+import {buildUrl} from "./common/Route"
+import {View} from "./common/View"
+import * as compression from 'compression'
+import * as helmet from 'helmet'
+import * as bodyParser from "body-parser"
+import * as cookieParser from "cookie-parser"
+import * as  session from 'express-session'
+import {Error as RError, Result} from "./common/Response"
+import "reflect-metadata"
 const {Nuxt, Builder} = require('nuxt');
 
 const SESSION_SECRET = '220183';
@@ -61,7 +61,10 @@ export class WebServer extends HttpServer {
                 .forEach(route => {
                     let url = buildUrl(controller.prototype, route.name, route.url);
                     console.log(HttpMethod[route.method] + ' - ' + url);
-                    router[HttpMethod[route.method]](url, this.createRoute(route, instance, parameters));
+                    if (route.middlewares)
+                        router[HttpMethod[route.method]](url, route.middlewares, this.createRoute(route, instance, parameters));
+                    else
+                        router[HttpMethod[route.method]](url, this.createRoute(route, instance, parameters));
                 });
         }
 
@@ -86,19 +89,29 @@ export class WebServer extends HttpServer {
                 try {
                     result = await result;
                 } catch (e) {
-                    result = e;
+                    this.getLogger().error(e);
+                    result = new RError(500, 'Internal server error.');
                 }
             } else if (result instanceof View) {
                 return res.render(result.template, result.options);
             }
 
-            if (result instanceof Error) {
+            if (result instanceof RError) {
                 res.status(result.code).json({
                     ok: false,
                     message: result.message
                 })
+            } else if (result instanceof Result) {
+                let object = {
+                    ok: true
+                };
+
+                if (result.name && result.content)
+                    object[result.name] = result.content;
+
+                res.json(object);
             } else {
-                res.json(result);
+                throw new Error('Invalid return type.')
             }
         };
     }
