@@ -8,14 +8,13 @@ import {Param} from "../core/decorators/parameters/Param";
 import {Post} from "../core/decorators/methods/Post";
 import {Session} from "../core/decorators/parameters/Session";
 
-
 const PAGE_LIMIT = 5;
 
 @Controller('api')
 class ApiController {
 
     @Get('posts')
-    private async posts(@Param('page', true) page:number) {
+    private async posts(@Param('page', true) page: number) {
         let posts = await PostModel.paginate({}, {
             page: page ? page : 1,
             populate: 'user',
@@ -63,7 +62,6 @@ class ApiController {
         }
 
     }
-
 
 
 }

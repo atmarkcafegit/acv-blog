@@ -28,7 +28,7 @@ export class ParamParameter extends Parameter implements IParameter {
     }
 
     public getValue(req: Request) {
-        let tmp = this.name.endsWith('?') ? this.name.substr(0, this.name.length - 1) : this.name;
-        return this.getRawValue(req.params[tmp]);
+        let paramName = this.name.endsWith('?') ? this.name.substr(0, this.name.length - 1) : this.name;
+        return this.getRawValue(req.params[paramName]);
     }
 }
