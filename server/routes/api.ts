@@ -1,7 +1,7 @@
 import * as express from "express";
 import {UserModel} from '../models/UserModel';
 import {PostModel} from '../models/PostModel';
-import {Comment} from '../models/Comment';
+import {CommentModel} from '../models/CommentModel';
 
 const router = express.Router();
 const PAGE_LIMIT = 5;

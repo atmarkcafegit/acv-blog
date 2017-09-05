@@ -26,6 +26,9 @@ export const mutations = {
     SET_HOT_AUTHORS: function (state, authors) {
         state.authors = authors;
     },
+    SET_HOT_POSTS: function (state, posts) {
+        state.hotPosts = posts;
+    },
 };
 
 export const actions = {
@@ -84,6 +87,13 @@ export const actions = {
             .then(response => {
                 if (response.data.ok)
                     commit('SET_HOT_AUTHORS', response.data.authors);
+            });
+    },
+    GET_HOT_POSTS({commit}) {
+        return axios.get(`${BASE_URL}/api/posts/hot`)
+            .then(response => {
+                if (response.data.ok)
+                    commit('SET_HOT_POSTS', response.data.posts);
             });
     }
 };

@@ -30,4 +30,4 @@ CommentSchema.pre('save', function (next) {
     next();
 });
 
-export const Comment = mongoose.model<ICommentModel>("Comment", CommentSchema);
+export const CommentModel = mongoose.model<ICommentModel>("Comment", CommentSchema);

@@ -4,9 +4,9 @@ import * as moment from 'moment';
 
 Vue.use(VeeValidate);
 
-Vue.filter('shortDescription', function(value, max) {
+Vue.filter('shortDescription', function(value, max, cont) {
     if (value.length > max) {
-        return value.substring(0, max) + '...'
+        return value.substring(0, max) + ((cont) ? '...' : '')
     }
 
     return value;
