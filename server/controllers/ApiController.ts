@@ -7,6 +7,7 @@ import {Data} from "../core/decorators/parameters/Data";
 import {Param} from "../core/decorators/parameters/Param";
 import {Post} from "../core/decorators/methods/Post";
 import {Session} from "../core/decorators/parameters/Session";
+import {Comment} from '../models/Comment';
 
 const PAGE_LIMIT = 5;
 
@@ -55,5 +56,26 @@ class ApiController {
         } else {
             return new Error(500, "Internal server error.");
         }
+    }
+
+    @Get('post')
+    private async getPost(@Param('slug') slug: string) {
+        let post = await (PostModel.findOne({slug: slug}) as any)
+            .deepPopulate(['user', 'comments', 'comments.user']);
+        return new Result('post', post);
+    }
+
+    @Post('comment')
+    private async addComment(@Data('content') content: string,
+                             @Data('userId') userId: string,
+                             @Data('postId') postId: string) {
+        let comment = await Comment.create({
+            content: content,
+            user: userId,
+            post: postId
+        });
+
+        console.log(comment);
+        return new Result();
     }
 }
