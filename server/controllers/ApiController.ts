@@ -2,7 +2,7 @@ import {Controller} from "../core/decorators/controllers/Controller";
 import {Get} from "../core/decorators/methods/Get";
 import {PostModel} from "../models/PostModel";
 import {UserModel} from "../models/UserModel";
-import {Error} from "../core/common/Error";
+import {Error, Result} from "../core/common/Response";
 import {Data} from "../core/decorators/parameters/Data";
 import {Param} from "../core/decorators/parameters/Param";
 import {Post} from "../core/decorators/methods/Post";
@@ -26,10 +26,7 @@ class ApiController {
                 return new Error(404, "No post.");
             }
 
-            return {
-                ok: true,
-                posts: posts,
-            };
+            return new Result('posts', posts);
         }
     }
 
@@ -51,17 +48,12 @@ class ApiController {
                 user.posts.push(post);
                 user.save();
 
-                return {
-                    ok: true
-                };
+                return new Result();
             } else {
                 return new Error(404, "User not found.");
             }
         } else {
             return new Error(500, "Internal server error.");
         }
-
     }
-
-
 }

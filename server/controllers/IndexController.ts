@@ -3,7 +3,7 @@ import {Post} from "../core/decorators/methods/Post";
 import {UserModel} from "../models/UserModel";
 import {Data} from "../core/decorators/parameters/Data";
 import {Session} from "../core/decorators/parameters/Session";
-import {Error} from "../core/common/Error";
+import {Error, Result} from "../core/common/Response";
 
 @Controller()
 class IndexController {
@@ -26,10 +26,7 @@ class IndexController {
 
                 session.authUser = authUser;
 
-                return {
-                    ok: true,
-                    user: authUser,
-                };
+                return new Result('user', authUser);
             } else {
                 return new Error(401, "Invalid username or password.");
             }
@@ -41,7 +38,7 @@ class IndexController {
     @Post('logout')
     private logout(@Session() session: any) {
         delete session.authUser;
-        return {ok: true}
+        return new Result()
     }
 
     @Post('register')
@@ -58,10 +55,7 @@ class IndexController {
             });
 
             if (user) {
-                return {
-                    ok: true,
-                    user: user,
-                };
+                return new Result('user', user);
             } else {
                 return new Error(500, "Internal server error.");
             }
