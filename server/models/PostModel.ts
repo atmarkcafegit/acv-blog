@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import {Schema} from 'mongoose';
-import {ICommentModel} from './Comment';
+import {ICommentModel} from './CommentModel';
 import * as mongoosePaginate from 'mongoose-paginate';
 
 const mongooseDeepPopulate = require('mongoose-deep-populate')(mongoose);
@@ -38,7 +38,8 @@ PostSchema.pre('save', function (next) {
     }
 
     if (this.title) {
-        this.slug = getSlug(this.title) + '-' + getRandomInt(1, 1000)
+        if (!this.slug)
+            this.slug = getSlug(this.title) + '-' + getRandomInt(1, 1000)
     }
 
     next();

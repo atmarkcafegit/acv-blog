@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container sitecontainer bgw">
         <nuxt-link v-if="isLogged" class="btn btn-default btn-primary" to="/post/new" style="margin-top: 20px">New Post</nuxt-link>
         <div class="clearfix"></div>
         <hr v-if="isLogged" >
@@ -30,7 +30,7 @@
                                     <router-link :to="{path: '/post/' + post.slug}">
                                         <h3> {{post.title}}</h3>
                                     </router-link>
-                                    <div> {{ post.content | shortDescription(150) }} </div>
+                                    <div> {{ post.content | shortDescription(150, 1) }} </div>
 
                                     <div class="large-post-meta">
                                         <span class="avatar"><a href="#"><img src="" alt="" class="img-circle"> {{ post.user.username }}</a></span>
@@ -65,17 +65,32 @@
                             <!-- Item -->
                             <div v-for="author, index in authors" class="item" style="margin-bottom: 10px">
                                 <div class="block">
-                                    <div class="inner avatar"></div>
+                                    <div class="inner avatar">{{ author.username | shortDescription(1) }}</div>
                                     <div class="inner"><a href="#">{{ author.username }}</a></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- end social -->
+                    <!-- end hot author -->
 
                     <div class="widget-title">
                         <h4>Top Views</h4>
                         <hr>
+                    </div>
+
+                    <div class="mini-widget carrier-widget m30">
+                        <div class="post clearfix" v-for="post, index in hotPosts">
+                            <div class="mini-widget-thumb">
+                                {{ post.title | shortDescription(1) }}
+                            </div>
+                            <div class="mini-widget-title">
+                                <router-link :to="{path: '/post/' + post.slug}">
+                                    {{ post.title}}
+                                </router-link>
+                                <small>{{ post.user.createdAt | dateFormat }}</small>
+                                <div class="mini-widget-hr"></div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="widget-title">
@@ -136,6 +151,10 @@
             await store.dispatch('GET_HOT_AUTHORS')
                 .catch(() => {
                 });
+
+            await store.dispatch('GET_HOT_POSTS')
+                .catch(() => {
+                });
         },
         computed: {
             posts() {
@@ -148,8 +167,10 @@
                 return !!this.$store.state.authUser;
             },
             authors() {
-                console.log(this.$store.state.authors);
                 return this.$store.state.authors;
+            },
+            hotPosts() {
+                return this.$store.state.hotPosts.docs;
             }
         },
         methods: {
