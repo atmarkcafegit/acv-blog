@@ -15,7 +15,9 @@ module.exports = {
             {src: 'https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js'}
         ]
     },
-    router: {},
+    router: {
+        mode: 'history'
+    },
     loading: {
         color: 'green',
         height: '2px'

@@ -6,6 +6,7 @@ export const state = () => ({
     authUser: null,
     posts: [],
     post: {},
+    lastRoute: '/',
     comments: [],
     authors: []
 });
@@ -29,6 +30,9 @@ export const mutations = {
     SET_HOT_POSTS: function (state, posts) {
         state.hotPosts = posts;
     },
+    SET_LAST_ROUTE: function (state, route) {
+        state.lastRoute = route;
+    }
 };
 
 export const actions = {
@@ -84,7 +88,7 @@ export const actions = {
 
                     let comments = state.comments.slice();
                     comments.push(response.data.comment);
-                    
+
                     commit('SET_COMMENTS', comments);
                 }
             });

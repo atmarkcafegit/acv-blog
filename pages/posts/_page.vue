@@ -1,8 +1,10 @@
 <template>
     <div class="container sitecontainer bgw">
-        <nuxt-link v-if="isLogged" class="btn btn-default btn-primary" to="/post/new" style="margin-top: 20px">New Post</nuxt-link>
+        <nuxt-link v-if="isLogged" class="btn btn-default btn-primary" to="/post/new" style="margin-top: 20px">
+            <i class="fa fa-edit"></i>Viết bài
+        </nuxt-link>
         <div class="clearfix"></div>
-        <hr v-if="isLogged" >
+        <hr v-if="isLogged">
         <div class="row homepage-version">
             <div class="col-md-9 col-sm-12 col-xs-12 m22">
                 <div class="widget searchwidget">
@@ -33,13 +35,20 @@
                                     <div> {{ post.content | shortDescription(150, 1) }} </div>
 
                                     <div class="large-post-meta">
-                                        <span class="avatar"><a href="#"><img src="" alt="" class="img-circle"> {{ post.user.username }}</a></span>
+                                        <span class="avatar"><a href="#"><img src="" alt=""
+                                                                              class="img-circle"> {{ post.user.username
+                                            }}</a></span>
                                         <small>&#124;</small>
-                                        <span><a href="#"><i class="fa fa-clock-o"></i> {{ post.user.createdAt | dateFormat }}</a></span>
+                                        <span><a href="#"><i
+                                                class="fa fa-clock-o"></i> {{ post.user.createdAt | dateFormat
+                                            }}</a></span>
                                         <small class="hidden-xs">&#124;</small>
-                                        <span class="hidden-xs"><a href="#"><i class="fa fa-comments-o"></i> {{ post.comments | countData }} </a></span>
+                                        <span class="hidden-xs"><a href="#"><i
+                                                class="fa fa-comments-o"></i> {{ post.comments | countData
+                                            }} </a></span>
                                         <small class="hidden-xs">&#124;</small>
-                                        <span class="hidden-xs"><a href="#"><i class="fa fa-eye"></i> {{ post.views }}</a></span>
+                                        <span class="hidden-xs"><a href="#"><i class="fa fa-eye"></i> {{ post.views
+                                            }}</a></span>
                                     </div>
                                     <!-- end meta -->
                                 </div>
@@ -174,9 +183,6 @@
             }
         },
         methods: {
-            isPageActive(page) {
-                return this.$store.state.posts.page === page;
-            },
             getRange(start, end) {
                 let array = [],
                     j = 0;

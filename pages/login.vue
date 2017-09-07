@@ -46,7 +46,7 @@
                         username: this.username,
                         password: this.password
                     }).then(() => {
-                        this.$router.push('/');
+                        this.$router.push(this.$store.state.lastRoute);
                     }).catch(e => {
                         this.errors.add('error', e.response.data.message);
                     });
