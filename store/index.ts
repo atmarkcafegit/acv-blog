@@ -75,11 +75,30 @@ export const actions = {
                 }
             });
     },
-    ADD_COMMENT({commit}, comment) {
+    ADD_COMMENT({commit, state}, comment) {
         return axios.post(`${BASE_URL}/api/post/comment`, comment)
             .then(response => {
-                if (response.data.ok)
-                    commit('SET_COMMENTS', response.data.comments);
+                if (response.data.ok) {
+                    let comment = response.data.comment;
+                    comment.user = state.authUser;
+
+                    let comments = state.comments.slice();
+                    comments.push(response.data.comment);
+                    
+                    commit('SET_COMMENTS', comments);
+                }
+            });
+    },
+    DELETE_COMMENT({commit, state}, commentId) {
+        return axios.delete(`${BASE_URL}/api/post/comment/${commentId}`)
+            .then(response => {
+                if (response.data.ok) {
+                    let comments = state.comments.filter(item => {
+                        return item._id !== commentId
+                    });
+
+                    commit('SET_COMMENTS', comments)
+                }
             });
     },
     GET_HOT_AUTHORS({commit}) {

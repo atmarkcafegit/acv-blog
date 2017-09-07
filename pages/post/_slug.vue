@@ -8,7 +8,9 @@
                             <div class="title-area">
                                 <div class="bread">
                                     <ol class="breadcrumb">
-                                        <li><nuxt-link to="/" class="">Home</nuxt-link></li>
+                                        <li>
+                                            <nuxt-link to="/" class="">Home</nuxt-link>
+                                        </li>
                                         <li class="">Blog</li>
                                         <li class="active">Single Blog</li>
                                     </ol>
@@ -20,20 +22,26 @@
                                 <h3>{{ post.title }}</h3>
 
                                 <div class="large-post-meta">
-                                    <span class="avatar"><a href="#"><img src="" alt="" class="img-circle"> {{post.user.username}}</a></span>
+                                    <span class="avatar"><a href="#"><img src="" alt=""
+                                                                          class="img-circle"> {{post.user.username}}</a></span>
                                     <small>&#124;</small>
-                                    <span><a href="#"><i class="fa fa-clock-o"></i> {{ post.createdAt | dateFormat }}</a></span>
+                                    <span><a href="#"><i class="fa fa-clock-o"></i> {{ post.createdAt | dateFormat
+                                        }}</a></span>
                                     <small class="hidden-xs">&#124;</small>
-                                    <span class="hidden-xs"><a href="#comments"><i class="fa fa-comments-o"></i> {{ post.user.comments }} </a></span>
+                                    <span class="hidden-xs"><a href="#comments"><i
+                                            class="fa fa-comments-o"></i> {{ post.user.comments }} </a></span>
                                     <small class="hidden-xs">&#124;</small>
                                     <span class="hidden-xs"><a href="#"><i class="fa fa-eye"></i> {{ post.user.views }}</a></span>
                                 </div><!-- end meta -->
 
                                 <div class="post-sharing">
                                     <ul class="list-inline">
-                                        <li><a href="#" class="fb-button btn btn-primary"><i class="fa fa-facebook"></i> <span class="hidden-xs">Share on Facebook</span></a></li>
-                                        <li><a href="#" class="tw-button btn btn-primary"><i class="fa fa-twitter"></i> <span class="hidden-xs">Tweet on Twitter</span></a></li>
-                                        <li><a href="#" class="gp-button btn btn-primary"><i class="fa fa-google-plus"></i></a></li>
+                                        <li><a href="#" class="fb-button btn btn-primary"><i class="fa fa-facebook"></i>
+                                            <span class="hidden-xs">Share on Facebook</span></a></li>
+                                        <li><a href="#" class="tw-button btn btn-primary"><i class="fa fa-twitter"></i>
+                                            <span class="hidden-xs">Tweet on Twitter</span></a></li>
+                                        <li><a href="#" class="gp-button btn btn-primary"><i
+                                                class="fa fa-google-plus"></i></a></li>
                                     </ul>
                                 </div><!-- end post-sharing -->
                             </div><!-- /.pull-right -->
@@ -82,11 +90,16 @@
                                     <div class="comments">
                                         <div class="well">
                                             <div class="media" v-for="comment in comments">
-                                                <div class="media-body">
-                                                    <h4 class="media-heading">{{comment.user.username ? comment.user.username : $store.state.authUser.username}}</h4>
+                                                <div class="media-body" :key="comment._id">
+                                                    <div>{{comment._id}}</div>
+                                                    <h4 class="media-heading">
+                                                        {{comment.user.username }}</h4>
                                                     <div class="time-comment clearfix">
-                                                        <small class="pull-left">{{ comment.createdAt | dateFormat }}</small>
-                                                        <a class="pull-right btn btn-primary btn-xs">Reply</a>
+                                                        <small class="pull-left">{{ comment.createdAt | dateFormat }}
+                                                        </small>
+                                                        <a class="pull-right btn btn-primary btn-xs"
+                                                           v-if="isAuthUser(comment.user._id)"
+                                                           @click.prevent.stop="deleteComment(comment._id)">Delete</a>
                                                     </div><!-- end time-comment -->
                                                     <p>{{ comment.content }}</p>
                                                 </div>
@@ -110,11 +123,15 @@
                                         <form class="row">
                                             <div class="col-md-12 col-sm-12">
                                                 <label>Comment <span class="required">*</span></label>
-                                                <textarea v-model="content" class="form-control" placeholder="Comment..."></textarea>
+                                                <textarea v-model="content" class="form-control"
+                                                          placeholder="Comment..."></textarea>
                                             </div>
 
                                             <div class="col-md-12 col-sm-12">
-                                                <a :disabled="!isLogged" class="btn btn-default" style="margin-top: 10px" @click="addComment">Add Comment</a>
+                                                <button :disabled="!isLogged" class="btn btn-default"
+                                                        style="margin-top: 10px" @click.prevent.stop="addComment">
+                                                    Add Comment
+                                                </button>
                                             </div>
                                         </form>
                                     </div><!-- end newsletter -->
@@ -128,6 +145,7 @@
     </div>
 </template>
 <script>
+    import Vue from 'vue'
     import VueMarkdown from 'vue-markdown'
 
     export default {
@@ -154,6 +172,9 @@
             }
         },
         methods: {
+            isAuthUser: function (userId) {
+                return this.isLogged && (this.$store.state.authUser._id === userId)
+            },
             addComment() {
                 this.$store.dispatch('ADD_COMMENT', {
                     content: this.content,
@@ -162,6 +183,9 @@
                 }).then(() => {
                     this.content = '';
                 })
+            },
+            deleteComment(id) {
+                this.$store.dispatch('DELETE_COMMENT', id);
             }
         }
     }
