@@ -51,7 +51,7 @@
                             </div><!-- /.pull-right -->
                         </div><!-- end post -->
                         <div class="post-desc">
-                            <vue-markdown>{{post.content}}</vue-markdown>
+                            <markdown-editor :value="post.content" :previewMode="3"></markdown-editor>
                         </div><!-- end post-desc -->
 
                         <div class="post-bottom">
@@ -148,12 +148,11 @@
     </div>
 </template>
 <script>
-    import Vue from 'vue'
-    import VueMarkdown from 'vue-markdown'
+    import editor from '../../components/editor.vue'
 
     export default {
         components: {
-            VueMarkdown
+            editor
         },
         data() {
             return {
