@@ -30,6 +30,9 @@ class ApiController {
     private async getPosts(@Param('page', true) page: number) {
         let posts = await PostModel.paginate({}, {
             page: page ? page : 1,
+            sort: {
+                createdAt: '-1'
+            },
             populate: 'user',
             limit: PAGE_LIMIT
         });

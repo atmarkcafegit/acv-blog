@@ -1,6 +1,6 @@
 <template>
     <div id="wrapper">
-        <div class="left-menu hidden-sm hidden-md hidden-xs">
+        <div class="left-menu hidden-sm hidden-md hidden-xs" style="display: none">
             <ul class="dm-social">
                 <li class="facebookbg"><a href="#" class="fa fa-facebook" data-toggle="tooltip" data-placement="right"
                                           title="Facebook">Facebook</a></li>

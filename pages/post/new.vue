@@ -1,7 +1,7 @@
 <template>
-    <div class="container">
+    <div class="container-fluid" style="margin-top: 10px">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="row form-group">
                     <div class="col-md-12">
                         <input class="form-control" v-model="title" placeholder="Title..."/>
@@ -9,7 +9,7 @@
                 </div>
                 <div class="row form-group">
                     <div class="col-md-12">
-                        <markdown-editor v-model="content"></markdown-editor>
+                        <markdown-editor  v-model="content"></markdown-editor>
                     </div>
                 </div>
                 <div class="row form-group">
@@ -33,8 +33,8 @@
         },
         data() {
             return {
-                title: '',
-                content: '',
+                title: null,
+                content: null,
                 test: null
             }
         },

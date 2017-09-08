@@ -1,5 +1,9 @@
 <template>
     <div class="container sitecontainer single-wrapper bgw">
+        <nuxt-link v-if="isLogged" class="btn btn-default btn-primary" to="/post/new" style="margin-top: 20px">
+            <i class="fa fa-edit"></i>Viết bài
+        </nuxt-link>
+        <div class="clearfix"></div>
         <div class="row">
             <div class="col-md-9 col-sm-9 col-xs-12 m22 single-post">
                 <div class="widget">
@@ -91,7 +95,6 @@
                                         <div class="well">
                                             <div class="media" v-for="comment in comments">
                                                 <div class="media-body" :key="comment._id">
-                                                    <div>{{comment._id}}</div>
                                                     <h4 class="media-heading">
                                                         {{comment.user.username }}</h4>
                                                     <div class="time-comment clearfix">
