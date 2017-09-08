@@ -1,29 +1,30 @@
 <template>
     <div class="markdown-editor">
         <div class="row">
-            <div class="col-md-6">
-                <textarea class="form-control contentEditor" ref="editor" title="" placeholder="Nội dung..."
-                          v-model="source" @scroll="scroll"></textarea>
+            <div :class="editorClass" ref="editor">
+                <textarea class="form-control contentEditor" ref="editor" title=""
+                          placeholder="Nội dung..." v-model="source" @scroll="scroll"></textarea>
             </div>
-            <div class="col-md-6 contentPreview" ref="content" style="height: 600px; overflow-y: auto">
-            </div>
+            <div :class="previewClass" ref="content" style="height: 600px; overflow-y: auto"></div>
         </div>
     </div>
 </template>
 <script>
     import Vue from 'vue'
-    import * as marked from 'marked'
-    import {Renderer} from 'marked'
+    import marked, {Renderer} from 'marked'
 
     import highlightjs from 'highlight.js';
 
     export default Vue.component('markdown-editor', {
         props: {
-            value: String
+            value: String,
+            previewMode: Number
         },
         data() {
             return {
-                source: this.value
+                source: this.value,
+                editorClass: 'col-md-6',
+                previewClass: 'col-md-6 contentPreview'
             }
         },
         watch: {
@@ -31,6 +32,18 @@
                 this.$emit('input', val);
                 this.$refs.content.innerHTML = this.marked(val);
                 MathJax.Hub.Queue(["Typeset", MathJax.Hub, this.$refs.content]);
+            },
+            previewMode(val) {
+                if (val === 1) {
+                    this.editorClass = 'col-md-12';
+                    this.previewClass = 'hidden'
+                } else if (val === 2) {
+                    this.editorClass = 'hidden';
+                    this.previewClass = 'col-md-12 contentPreview'
+                } else {
+                    this.editorClass = 'col-md-6';
+                    this.previewClass = 'col-md-6 contentPreview';
+                }
             }
         },
         mounted() {
@@ -73,7 +86,7 @@
     .markdown-editor {
         border: solid 1px #9f9f9f;
         border-radius: 4px;
-        padding: 5px 15px 5px 5px;
+        padding: 5px;
         opacity: 0.7;
     }
 

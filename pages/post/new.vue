@@ -4,18 +4,32 @@
             <div class="col-md-12">
                 <div class="row form-group">
                     <div class="col-md-12">
-                        <input class="form-control" v-model="title" placeholder="Title..."/>
+                        <input class="form-control" v-model="title" placeholder="Tiêu đề..."/>
                     </div>
                 </div>
-                <div class="row form-group">
+                <div class="btn-group btn-group-lg">
+                    <button type="button" :class="{btn: true, 'btn-default': true, active: mode === 1}"
+                            @click="mode = 1">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" :class="{btn: true, 'btn-default': true, active: mode === 0}"
+                            @click="mode = 0">
+                        <i class="fa fa-columns" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" :class="{btn: true, 'btn-default': true, active: mode === 2}"
+                            @click="mode = 2">
+                        <i class="fa fa-eye" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="row form-group" style="margin-top: 10px">
                     <div class="col-md-12">
-                        <markdown-editor  v-model="content"></markdown-editor>
+                        <markdown-editor v-model="content" :previewMode="mode"></markdown-editor>
                     </div>
                 </div>
                 <div class="row form-group">
                     <div class="col-md-12 text-center">
-                        <a class="btn btn-default" @click="submit">Submit</a>
-                        <a style="margin-left: 5px" class="btn btn-default" @click="cancel">Cancel</a>
+                        <a class="btn btn-primary" @click="submit">Gửi bài</a>
+                        <a style="margin-left: 5px" class="btn btn-default" @click="cancel">Hủy</a>
                     </div>
                 </div>
             </div>
@@ -35,7 +49,7 @@
             return {
                 title: null,
                 content: null,
-                test: null
+                mode: 0
             }
         },
         methods: {
@@ -54,3 +68,5 @@
         }
     }
 </script>
+<style>
+</style>
