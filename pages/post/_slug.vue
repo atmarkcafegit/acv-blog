@@ -15,7 +15,9 @@
                                         <li>
                                             <nuxt-link to="/" class="">Trang chủ</nuxt-link>
                                         </li>
-                                        <li class="">Bài viết</li>
+                                        <li>
+                                            <nuxt-link to="/posts" class="">Bài viết</nuxt-link>
+                                        </li>
                                         <li class="active">{{post.title }}</li>
                                     </ol>
                                 </div><!-- end bread -->

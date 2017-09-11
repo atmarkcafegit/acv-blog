@@ -26,7 +26,7 @@ const PostSchema = new Schema({
     views: {type: Number},
     vote: {type: Number},
     comments: [{type: Schema.Types.ObjectId, ref: 'Comment'}],
-    tags: [{type: String}],
+    tags: [{type: String, index: true}],
     createdAt: {type: Date},
     updatedAt: {type: Date}
 });

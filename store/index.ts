@@ -10,6 +10,7 @@ export const state = () => ({
     comments: [],
     hotPosts: [],
     hotTags: [],
+    tags: [],
     tagPosts: [],
     authors: []
 });
@@ -35,6 +36,9 @@ export const mutations = {
     },
     SET_HOT_TAGS: function (state, tags) {
         state.hotTags = tags;
+    },
+    SET_TAGS(state, tags) {
+        state.tags = tags;
     },
     SET_TAG_POSTS: function (state, posts) {
         state.tagPosts = posts;
@@ -133,6 +137,13 @@ export const actions = {
             .then(response => {
                 if (response.data.ok)
                     commit('SET_HOT_TAGS', response.data.tags);
+            });
+    },
+    GET_TAGS({commit}) {
+        return axios.get(`${BASE_URL}/api/tags`)
+            .then(response => {
+                if (response.data.ok)
+                    commit('SET_TAGS', response.data.tags);
             });
     },
     GET_TAG_POSTS({commit}, tag) {
