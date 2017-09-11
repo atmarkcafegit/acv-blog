@@ -74,7 +74,10 @@
                 if (!this.errors.any()) {
                     if (!this.content) {
                         this.errors.add('error', 'The content field is required.');
-                    } else {
+                    } else if (this.content.length < 200) {
+                        this.errors.add('error', 'The content field is too short.');
+                    }
+                    else {
                         axios.post('/api/post', {
                             title: this.title,
                             content: this.content,
