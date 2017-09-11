@@ -124,8 +124,8 @@ class ApiController {
         return new Result()
     }
 
-    @Get('author/hot')
-    private async getHotAuthor() {
+    @Get('hot-authors')
+    private async getHotAuthors() {
         let posts = await PostModel.aggregate(
             {$group: {_id: '$user', numberViews: {$sum: '$views'}}},
             {$sort: {numberViews: -1}},
@@ -147,12 +147,10 @@ class ApiController {
         return new Result('authors', users);
     }
 
-    @Get('posts/hot')
-    private async getHotPost() {
-        let posts = await PostModel.find(
-            {$sort: {views: -1}},
-            {$limit: 5}
-        );
+    @Get('hot-posts')
+    private async getHotPosts() {
+        let posts = await PostModel.find({},
+            ['_id', 'slug', 'title', 'views', 'createdAt', 'updatedAt']).sort({views: -1}).limit(5);
 
         return new Result('posts', posts);
     }

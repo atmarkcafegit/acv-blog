@@ -106,14 +106,14 @@ export const actions = {
             });
     },
     GET_HOT_AUTHORS({commit}) {
-        return axios.get(`${BASE_URL}/api/author/hot`)
+        return axios.get(`${BASE_URL}/api/hot-authors`)
             .then(response => {
                 if (response.data.ok)
                     commit('SET_HOT_AUTHORS', response.data.authors);
             });
     },
     GET_HOT_POSTS({commit}) {
-        return axios.get(`${BASE_URL}/api/posts/hot`)
+        return axios.get(`${BASE_URL}/api/hot-posts`)
             .then(response => {
                 if (response.data.ok)
                     commit('SET_HOT_POSTS', response.data.posts);

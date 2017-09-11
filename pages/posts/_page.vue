@@ -13,11 +13,8 @@
                             <div class="col-md-2">
                                 <div class="post-media">
                                     <router-link :to="{path: '/post/' + post.slug}">
-                                        <div class="post-category post-php" v-if="Math.random() < 0.5">
-                                            <span>PHP</span>
-                                        </div>
-                                        <div class="post-category post-html" v-else>
-                                            <span>HTML</span>
+                                        <div class="post-category post-html">
+                                            <span>{{ post.title.toUpperCase() | shortDescription(1) }}</span>
                                         </div>
                                     </router-link>
                                 </div>
@@ -26,8 +23,7 @@
                             <div class="col-md-10">
                                 <div class="title-area">
                                     <div class="colorfulcats">
-                                        <a href="#"><span class="label label-primary">Interview</span></a>
-                                        <a href="#"><span class="label label-warning">Web Design</span></a>
+
                                     </div>
                                     <router-link :to="{path: '/post/' + post.slug}">
                                         <h3> {{post.title}}</h3>
@@ -40,12 +36,13 @@
                                             }}</a></span>
                                         <small>&#124;</small>
                                         <span><a href="#"><i
-                                                class="fa fa-clock-o"></i> {{ post.user.createdAt | dateFormat
+                                                class="fa fa-clock-o"></i> {{ post.createdAt | dateFormat
                                             }}</a></span>
                                         <small class="hidden-xs">&#124;</small>
-                                        <span class="hidden-xs"><a href="#"><i
+                                        <span class="hidden-xs"><router-link
+                                                :to="{path: '/post/' + post.slug + '#comments'}"><i
                                                 class="fa fa-comments-o"></i> {{ post.comments | countData
-                                            }} </a></span>
+                                            }} </router-link></span>
                                         <small class="hidden-xs">&#124;</small>
                                         <span class="hidden-xs"><a href="#"><i class="fa fa-eye"></i> {{ post.views
                                             }}</a></span>
@@ -96,7 +93,7 @@
                                 <router-link :to="{path: '/post/' + post.slug}">
                                     {{ post.title}}
                                 </router-link>
-                                <small>{{ post.user.createdAt | dateFormat }}</small>
+                                <small>{{ post.createdAt | dateFormat }}</small>
                                 <div class="mini-widget-hr"></div>
                             </div>
                         </div>
@@ -153,17 +150,9 @@
 <script>
     export default {
         async fetch({store, route}) {
-            await store.dispatch('GET_POSTS', route.params.page ? parseInt(route.params.page) : null)
-                .catch(() => {
-                });
-
-            await store.dispatch('GET_HOT_AUTHORS')
-                .catch(() => {
-                });
-
-            await store.dispatch('GET_HOT_POSTS')
-                .catch(() => {
-                });
+            await store.dispatch('GET_POSTS', route.params.page ? parseInt(route.params.page) : null);
+            await store.dispatch('GET_HOT_AUTHORS');
+            await store.dispatch('GET_HOT_POSTS');
         },
         computed: {
             posts() {
@@ -179,7 +168,7 @@
                 return this.$store.state.authors;
             },
             hotPosts() {
-                return this.$store.state.hotPosts.docs;
+                return this.$store.state.hotPosts;
             }
         },
         methods: {
@@ -197,3 +186,8 @@
         }
     }
 </script>
+<style>
+    .post-category {
+        font-size: xx-large;
+    }
+</style>

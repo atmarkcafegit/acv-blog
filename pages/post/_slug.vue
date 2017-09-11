@@ -20,8 +20,7 @@
                                     </ol>
                                 </div><!-- end bread -->
                                 <div class="colorfulcats">
-                                    <a href="#"><span class="label label-primary">Interview</span></a>
-                                    <a href="#"><span class="label label-warning">Web Design</span></a>
+
                                 </div>
                                 <h3>{{ post.title }}</h3>
 
@@ -35,7 +34,7 @@
                                     <span class="hidden-xs"><a href="#comments"><i
                                             class="fa fa-comments-o"></i> {{ post.user.comments }} </a></span>
                                     <small class="hidden-xs">&#124;</small>
-                                    <span class="hidden-xs"><a href="#"><i class="fa fa-eye"></i> {{ post.user.views }}</a></span>
+                                    <span class="hidden-xs"><a href="#"><i class="fa fa-eye"></i> {{ post.views }}</a></span>
                                 </div><!-- end meta -->
 
                                 <div class="post-sharing">
@@ -70,13 +69,7 @@
                                 <div class="col-md-4 hidden-xs">
                                     <div class="post-share">
                                         <div class="customshare">
-                                                 <span class="list">
-                                                    <strong><i class="fa fa-share-alt"></i> 980
-                                                    <a href="#" class="tw"><i class="fa fa-twitter"></i></a>
-                                                    <a href="#" class="fb"><i class="fa fa-facebook"></i></a>
-                                                    <a href="#" class="gp"><i class="fa fa-google-plus"></i></a>
-                                                    </strong>
-                                                </span>
+
                                         </div>
                                     </div><!-- end share -->
                                 </div><!-- end col -->
@@ -87,7 +80,7 @@
                             <div class="col-md-12">
                                 <div class="widget">
                                     <div class="widget-title">
-                                        <h4>Comments</h4>
+                                        <h4 id>Comments</h4>
                                         <hr>
                                     </div><!-- end widget-title -->
 
