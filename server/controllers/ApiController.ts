@@ -158,6 +158,23 @@ class ApiController {
         return new Result('posts', posts);
     }
 
+    @Get('hot-tags')
+    private async getHotTags() {
+        let tags = await PostModel.aggregate([
+            {"$unwind": "$tags"},
+            {
+                "$group": {
+                    "_id": "$tags",
+                    "count": {"$sum": 1}
+                }
+            },
+            {"$sort": {"_id": -1}},
+            {"$limit": 10}
+        ]);
+
+        return new Result('tags', tags);
+    }
+
     @Get('tag-posts')
     private async getTagPosts(@Param('tag') tag: string, @Param('page', true) page: number) {
         let posts = await PostModel.paginate({tags: tag}, {

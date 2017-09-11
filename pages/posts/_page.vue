@@ -103,6 +103,12 @@
                         <h4>Hot Tags</h4>
                         <hr>
                     </div>
+                    <div class="mini-widget carrier-widget m30 tags">
+                        <nuxt-link v-for="tag, i in hotTags" :to="'/tags/' + tag._id"
+                                   style="margin-left: 3px" :key="i">
+                            {{tag._id}}
+                        </nuxt-link>
+                    </div>
                 </div>
             </div>
         </div>
@@ -152,6 +158,7 @@
             await store.dispatch('GET_POSTS', route.params.page ? parseInt(route.params.page) : null);
             await store.dispatch('GET_HOT_AUTHORS');
             await store.dispatch('GET_HOT_POSTS');
+            await store.dispatch('GET_HOT_TAGS');
         },
         computed: {
             posts() {
@@ -168,6 +175,9 @@
             },
             hotPosts() {
                 return this.$store.state.hotPosts;
+            },
+            hotTags() {
+                return this.$store.state.hotTags;
             }
         },
         methods: {

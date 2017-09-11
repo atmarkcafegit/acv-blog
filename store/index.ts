@@ -9,6 +9,7 @@ export const state = () => ({
     lastRoute: '/',
     comments: [],
     hotPosts: [],
+    hotTags: [],
     tagPosts: [],
     authors: []
 });
@@ -31,6 +32,9 @@ export const mutations = {
     },
     SET_HOT_POSTS: function (state, posts) {
         state.hotPosts = posts;
+    },
+    SET_HOT_TAGS: function (state, tags) {
+        state.hotTags = tags;
     },
     SET_TAG_POSTS: function (state, posts) {
         state.tagPosts = posts;
@@ -122,6 +126,13 @@ export const actions = {
             .then(response => {
                 if (response.data.ok)
                     commit('SET_HOT_POSTS', response.data.posts);
+            });
+    },
+    GET_HOT_TAGS({commit}) {
+        return axios.get(`${BASE_URL}/api/hot-tags`)
+            .then(response => {
+                if (response.data.ok)
+                    commit('SET_HOT_TAGS', response.data.tags);
             });
     },
     GET_TAG_POSTS({commit}, tag) {
