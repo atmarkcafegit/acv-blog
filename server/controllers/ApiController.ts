@@ -49,11 +49,13 @@ class ApiController {
     @Post('post', [auth])
     private async addPost(@Data('title') title: string,
                           @Data('content') content: string,
+                          @Data('tags') tags: [string],
                           @Data('userId') userId: string) {
 
         let post = await PostModel.create({
             title: title,
             content: content,
+            tags: tags,
             user: userId
         });
 
@@ -150,7 +152,8 @@ class ApiController {
     @Get('hot-posts')
     private async getHotPosts() {
         let posts = await PostModel.find({},
-            ['_id', 'slug', 'title', 'views', 'createdAt', 'updatedAt']).sort({views: -1}).limit(5);
+            ['_id', 'slug', 'title', 'views', 'createdAt', 'updatedAt'])
+            .sort({views: -1}).limit(5);
 
         return new Result('posts', posts);
     }

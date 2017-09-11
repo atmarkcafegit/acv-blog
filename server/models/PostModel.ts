@@ -13,6 +13,7 @@ export interface IPostModel extends mongoose.Document {
     views: number,
     vote: number,
     comments: Array<ICommentModel>,
+    tags: Array<string>,
     createdAt: Date,
     updatedAt: Date
 }
@@ -25,6 +26,7 @@ const PostSchema = new Schema({
     views: {type: Number},
     vote: {type: Number},
     comments: [{type: Schema.Types.ObjectId, ref: 'Comment'}],
+    tags: [{type: String}],
     createdAt: {type: Date},
     updatedAt: {type: Date}
 });

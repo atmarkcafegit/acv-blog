@@ -102,7 +102,7 @@
     }
 
     .contentEditor {
-        height: 600px !important;
+        height: 590px !important;
         border: none;
         outline: none !important;
         box-shadow: none !important;

@@ -1,7 +1,7 @@
 <template>
     <div class="container sitecontainer single-wrapper bgw">
         <nuxt-link v-if="isLogged" class="btn btn-default btn-primary" to="/post/new" style="margin-top: 20px">
-            <i class="fa fa-edit"></i>Viết bài
+            <i class="fa fa-edit fa-fw"></i>Viết bài
         </nuxt-link>
         <div class="clearfix"></div>
         <div class="row">
@@ -34,7 +34,8 @@
                                     <span class="hidden-xs"><a href="#comments"><i
                                             class="fa fa-comments-o"></i> {{ post.user.comments }} </a></span>
                                     <small class="hidden-xs">&#124;</small>
-                                    <span class="hidden-xs"><a href="#"><i class="fa fa-eye"></i> {{ post.views }}</a></span>
+                                    <span class="hidden-xs"><a href="#"><i class="fa fa-eye"></i> {{ post.views
+                                        }}</a></span>
                                 </div><!-- end meta -->
 
                                 <div class="post-sharing">
@@ -57,12 +58,11 @@
                             <div class="row">
                                 <div class="col-md-8">
                                     <div class="tags">
-                                        <h4>Tags</h4>
-                                        <a href="#">cinema</a>
-                                        <a href="#">club</a>
-                                        <a href="#">html5</a>
-                                        <a href="#">css3</a>
-                                        <a href="#">web design</a>
+                                        <h4>Thẻ tag</h4>
+                                        <nuxt-link v-for="tag, i in post.tags" :to="'/tags/' + tag"
+                                                   style="margin-left: 3px" :key="i">
+                                            {{tag}}
+                                        </nuxt-link>
                                     </div><!-- end tags -->
                                 </div><!-- end col -->
 
@@ -80,7 +80,7 @@
                             <div class="col-md-12">
                                 <div class="widget">
                                     <div class="widget-title">
-                                        <h4 id>Comments</h4>
+                                        <h4 id>Bình luận</h4>
                                         <hr>
                                     </div><!-- end widget-title -->
 
@@ -111,7 +111,7 @@
                             <div class="col-md-12">
                                 <div class="widget">
                                     <div class="widget-title">
-                                        <h4>Leave a Comment</h4>
+                                        <h4>Bình luận của bạn</h4>
                                         <hr>
                                     </div><!-- end widget-title -->
 
@@ -142,6 +142,7 @@
 </template>
 <script>
     import editor from '../../components/editor.vue'
+    import * as _ from 'lodash'
 
     export default {
         components: {
@@ -165,6 +166,16 @@
             isLogged: function () {
                 return !!this.$store.state.authUser;
             }
+        },
+        mounted() {
+            let comp = new RegExp(location.host);
+            let links = document.querySelectorAll('.markdown-editor a');
+            _.each(links, link => {
+                let href = link.getAttribute('href');
+                if (!comp.test(href) && (href.substr(0, 1) !== '#')) {
+                    link.setAttribute('target', '_blank');
+                }
+            });
         },
         methods: {
             isAuthUser: function (userId) {

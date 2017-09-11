@@ -17,7 +17,7 @@
         }
     }
 </script>
-<style scoped>
+<style>
     html.login, body.login {
         height: 100%;
         background: url(~/static/background-login.jpg);

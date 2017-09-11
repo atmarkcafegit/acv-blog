@@ -66,6 +66,7 @@
                 axios.post('/api/post', {
                     title: this.title,
                     content: this.content,
+                    tags: this.tags,
                     userId: this.$store.state.authUser._id
                 }).then(() => {
                     this.$router.push('/')
