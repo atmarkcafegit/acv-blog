@@ -105,7 +105,7 @@
                     </div>
                     <div class="mini-widget carrier-widget m30 tags">
                         <nuxt-link v-for="tag, i in hotTags" :to="'/tags/' + tag._id"
-                                   style="margin-left: 3px" :key="i">
+                                   style="margin-left: 3px; margin-top: 2px" :key="i">
                             {{tag._id}}
                         </nuxt-link>
                     </div>

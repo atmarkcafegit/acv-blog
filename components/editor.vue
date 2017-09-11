@@ -102,7 +102,7 @@
     }
 
     .contentEditor {
-        height: 570px !important;
+        min-height: 570px !important;
         border: none;
         outline: none !important;
         box-shadow: none !important;
@@ -110,7 +110,7 @@
     }
 
     .contentPreview {
-        height: 570px !important;
+        min-height: 570px !important;
     }
 
     .contentPreview .table {

@@ -62,7 +62,7 @@
                                     <div class="tags">
                                         <h4>Thẻ tag</h4>
                                         <nuxt-link v-for="tag, i in post.tags" :to="'/tags/' + tag"
-                                                   style="margin-left: 3px" :key="i">
+                                                   style="margin-left: 3px; margin-top: 2px" :key="i">
                                             {{tag}}
                                         </nuxt-link>
                                     </div><!-- end tags -->
