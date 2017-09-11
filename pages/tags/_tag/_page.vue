@@ -1,12 +1,20 @@
 <template>
     <div class="container sitecontainer bgw">
-        <nuxt-link v-if="isLogged" class="btn btn-default btn-primary" to="/post/new" style="margin-top: 20px">
-            <i class="fa fa-edit fa-fw"></i>Viết bài
-        </nuxt-link>
-        <div class="clearfix"></div>
-        <hr v-if="isLogged">
         <div class="row homepage-version">
-            <div class="col-md-9 col-sm-12 col-xs-12 m22">
+            <div class="col-md-12 col-sm-12 col-xs-12 m22">
+                <div class="bread">
+                    <ol class="breadcrumb">
+                        <li>
+                            <nuxt-link to="/">Trang chủ</nuxt-link>
+                        </li>
+                        <li class="">
+                            <nuxt-link to="/tags">Thẻ tags</nuxt-link>
+                        </li>
+                        <li class="active">
+                            {{$route.params.tag}}
+                        </li>
+                    </ol>
+                </div><!-- end bread -->
                 <div class="widget searchwidget">
                     <div v-for="post, index in posts" class="large-widget m30">
                         <div class="post row clearfix">
@@ -58,86 +66,41 @@
                     <!-- end large-widget -->
                 </div>
             </div>
-            <div class="col-md-3 col-sm-12 col-xs-12 ">
-                <div class="widget">
-                    <div class="widget-title">
-                        <h4>Tác giả nổi bật</h4>
-                        <hr>
-                    </div>
-                    <!-- end widget-title -->
-
-                    <div class="social-media-widget m30">
-                        <div class="ui selection list ranking-users">
-                            <!-- Item -->
-                            <div v-for="author, index in authors" class="item" style="margin-bottom: 10px">
-                                <div class="block">
-                                    <div class="inner avatar">{{ author.username | shortDescription(1) }}</div>
-                                    <div class="inner"><a href="#">{{ author.username }}</a></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end hot author -->
-
-                    <div class="widget-title">
-                        <h4>Xem nhiều nhất</h4>
-                        <hr>
-                    </div>
-
-                    <div class="mini-widget carrier-widget m30">
-                        <div class="post clearfix" v-for="post, index in hotPosts">
-                            <div class="mini-widget-thumb">
-                                {{ post.title | shortDescription(1) }}
-                            </div>
-                            <div class="mini-widget-title">
-                                <router-link :to="{path: '/post/' + post.slug}">
-                                    {{ post.title}}
-                                </router-link>
-                                <small>{{ post.createdAt | dateFormat }}</small>
-                                <div class="mini-widget-hr"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="widget-title">
-                        <h4>Hot Tags</h4>
-                        <hr>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="row" v-if="!!posts && posts.length > 0">
             <div class="col-md-8 text-center">
                 <ul class="pagination">
                     <li>
-                        <router-link :to="{path: '/posts/' + (postsInfo.page > 1? parseInt(postsInfo.page) - 1: 1)}">
+                        <router-link
+                                :to="{path: `/tags/${$route.params.tag}/` + (postsInfo.page > 1? parseInt(postsInfo.page) - 1: 1)}">
                             <i class="fa fa-angle-left"></i>
                         </router-link>
                     </li>
                     <li v-if="postsInfo.page !== 1">
-                        <router-link :to="{path: '/posts/1'}">1</router-link>
+                        <router-link :to="{path: `/tags/1`}">1</router-link>
                     </li>
                     <li v-if="postsInfo.page - 2 > 1">
                         <a>...</a>
                     </li>
                     <li v-for="p in getRange(postsInfo.page - 2, postsInfo.page - 1)" v-if="p > 1">
-                        <router-link :to="{path: '/posts/' + p }">{{p}}</router-link>
+                        <router-link :to="{path: `/tags/${$route.params.tag}/` + p }">{{p}}</router-link>
                     </li>
                     <li class="active">
                         <a>{{postsInfo.page}}</a>
                     </li>
                     <li v-for="p in getRange(postsInfo.page + 1, postsInfo.page + 2)" v-if="p < postsInfo.pages">
-                        <router-link :to="{path: '/posts/' + p }">{{p}}</router-link>
+                        <router-link :to="{path: `/tags/${$route.params.tag}/` + p }">{{p}}</router-link>
                     </li>
                     <li v-if="postsInfo.pages - 2 > postsInfo.page">
                         <a>...</a>
                     </li>
                     <li v-if="postsInfo.page !== postsInfo.pages">
-                        <router-link :to="{path: '/posts/' + postsInfo.pages}">{{postsInfo.pages}}</router-link>
+                        <router-link :to="{path: `/tags/${$route.params.tag}/` + postsInfo.pages}">{{postsInfo.pages}}
+                        </router-link>
                     </li>
                     <li>
                         <router-link
-                                :to="{path: '/posts/' + (postsInfo.page < postsInfo.pages ? parseInt(postsInfo.page) + 1: postsInfo.pages) }">
+                                :to="{path: `/tags/${$route.params.tag}/` + (postsInfo.page < postsInfo.pages ? parseInt(postsInfo.page) + 1: postsInfo.pages) }">
                             <i class="fa fa-angle-right"></i>
                         </router-link>
                     </li>
@@ -149,26 +112,15 @@
 <script>
     export default {
         async fetch({store, route}) {
-            await store.dispatch('GET_POSTS', route.params.page ? parseInt(route.params.page) : null);
-            await store.dispatch('GET_HOT_AUTHORS');
-            await store.dispatch('GET_HOT_POSTS');
+            await store.dispatch('GET_TAG_POSTS', route.params.tag);
         },
         computed: {
             posts() {
-                return this.$store.state.posts.docs;
+                return this.$store.state.tagPosts.docs;
             },
             postsInfo() {
-                return this.$store.state.posts;
+                return this.$store.state.tagPosts;
             },
-            isLogged: function () {
-                return !!this.$store.state.authUser;
-            },
-            authors() {
-                return this.$store.state.authors;
-            },
-            hotPosts() {
-                return this.$store.state.hotPosts;
-            }
         },
         methods: {
             getRange(start, end) {
@@ -185,8 +137,3 @@
         }
     }
 </script>
-<style>
-    .post-category {
-        font-size: xx-large;
-    }
-</style>

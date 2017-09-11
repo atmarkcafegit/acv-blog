@@ -157,4 +157,24 @@ class ApiController {
 
         return new Result('posts', posts);
     }
+
+    @Get('tag-posts')
+    private async getTagPosts(@Param('tag') tag: string, @Param('page', true) page: number) {
+        let posts = await PostModel.paginate({tags: tag}, {
+            page: page ? page : 1,
+            sort: {
+                createdAt: '-1'
+            },
+            populate: 'user',
+            limit: PAGE_LIMIT
+        });
+
+        if (posts) {
+            if (posts.docs.length === 0) {
+                return new Error(404, "No post.");
+            }
+
+            return new Result('posts', posts);
+        }
+    }
 }
