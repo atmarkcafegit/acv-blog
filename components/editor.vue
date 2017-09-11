@@ -102,11 +102,15 @@
     }
 
     .contentEditor {
-        height: 590px !important;
+        height: 570px !important;
         border: none;
         outline: none !important;
         box-shadow: none !important;
         resize: none;
+    }
+
+    .contentPreview {
+        height: 570px !important;
     }
 
     .contentPreview .table {
