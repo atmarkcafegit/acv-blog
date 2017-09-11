@@ -13,10 +13,10 @@
                                 <div class="bread">
                                     <ol class="breadcrumb">
                                         <li>
-                                            <nuxt-link to="/" class="">Home</nuxt-link>
+                                            <nuxt-link to="/" class="">Trang chủ</nuxt-link>
                                         </li>
-                                        <li class="">Blog</li>
-                                        <li class="active">Single Blog</li>
+                                        <li class="">Bài viết</li>
+                                        <li class="active">{{post.title }}</li>
                                     </ol>
                                 </div><!-- end bread -->
                                 <div class="colorfulcats">

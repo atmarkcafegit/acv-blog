@@ -1,7 +1,7 @@
 <template>
     <div class="container sitecontainer bgw">
         <nuxt-link v-if="isLogged" class="btn btn-default btn-primary" to="/post/new" style="margin-top: 20px">
-            <i class="fa fa-edit"></i>Viết bài
+            <i class="fa fa-edit fa-fw"></i>Viết bài
         </nuxt-link>
         <div class="clearfix"></div>
         <hr v-if="isLogged">
@@ -61,7 +61,7 @@
             <div class="col-md-3 col-sm-12 col-xs-12 ">
                 <div class="widget">
                     <div class="widget-title">
-                        <h4>Hot Authors</h4>
+                        <h4>Tác giả nổi bật</h4>
                         <hr>
                     </div>
                     <!-- end widget-title -->
@@ -80,7 +80,7 @@
                     <!-- end hot author -->
 
                     <div class="widget-title">
-                        <h4>Top Views</h4>
+                        <h4>Xem nhiều nhất</h4>
                         <hr>
                     </div>
 

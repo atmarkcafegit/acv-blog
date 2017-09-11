@@ -7,6 +7,12 @@
                         <input class="form-control" v-model="title" placeholder="Tiêu đề..."/>
                     </div>
                 </div>
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        <tags-input class="form-control" placeholder="Thêm thẻ tag..." :tags="tags"
+                                    @tags-change="handleChange"></tags-input>
+                    </div>
+                </div>
                 <div class="btn-group btn-group-lg">
                     <button type="button" :class="{btn: true, 'btn-default': true, active: mode === 1}"
                             @click="mode = 1">
@@ -38,17 +44,20 @@
 </template>
 <script>
     import editor from '../../components/editor.vue'
+    import tagsInput from '../../components/tags/input.vue'
     import axios from 'axios'
 
     export default {
         middleware: 'auth',
         components: {
-            editor
+            editor,
+            tagsInput
         },
         data() {
             return {
                 title: null,
                 content: null,
+                tags: [],
                 mode: 0
             }
         },
@@ -64,6 +73,13 @@
             },
             cancel() {
                 this.$router.push('/')
+            },
+            handleChange(index, text) {
+                if (text) {
+                    this.tags.push(text);
+                } else {
+                    this.tags.splice(index, 1)
+                }
             }
         }
     }

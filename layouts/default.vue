@@ -78,10 +78,10 @@
                             </ul>
                             <ul class="nav navbar-nav navbar-right ">
                                 <li v-if="!isLoginPath && !isLogged">
-                                    <a href="" @click.prevent.stop="login" class="">LOGIN</a>
+                                    <a href="" @click.prevent.stop="login" class="">ĐĂNG NHẬP</a>
                                 </li>
                                 <li v-if="isLogged">
-                                    <a href="" @click.prevent.stop="logout">LOGOUT</a>
+                                    <a href="" @click.prevent.stop="logout">ĐĂNG XUẤT</a>
                                 </li>
                             </ul>
                         </div>
@@ -103,8 +103,8 @@
         data() {
             return {
                 tabs: [
-                    {id: 0, text: 'POST', path: '/posts'},
-                    {id: 1, text: 'TAGS', path: '/tags'}
+                    {id: 0, text: 'BÀI VIẾT', path: '/posts'},
+                    {id: 1, text: 'THẺ TAGS', path: '/tags'}
                 ]
             }
         },
