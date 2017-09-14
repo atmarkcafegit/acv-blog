@@ -6,7 +6,12 @@ export const state = () => ({
     authUser: null,
     posts: [],
     post: {},
+    lastRoute: '/',
     comments: [],
+    hotPosts: [],
+    hotTags: [],
+    tags: [],
+    tagPosts: [],
     authors: []
 });
 
@@ -29,6 +34,18 @@ export const mutations = {
     SET_HOT_POSTS: function (state, posts) {
         state.hotPosts = posts;
     },
+    SET_HOT_TAGS: function (state, tags) {
+        state.hotTags = tags;
+    },
+    SET_TAGS(state, tags) {
+        state.tags = tags;
+    },
+    SET_TAG_POSTS: function (state, posts) {
+        state.tagPosts = posts;
+    },
+    SET_LAST_ROUTE: function (state, route) {
+        state.lastRoute = route;
+    }
 };
 
 export const actions = {
@@ -75,25 +92,65 @@ export const actions = {
                 }
             });
     },
-    ADD_COMMENT({commit}, comment) {
+    ADD_COMMENT({commit, state}, comment) {
         return axios.post(`${BASE_URL}/api/post/comment`, comment)
             .then(response => {
-                if (response.data.ok)
-                    commit('SET_COMMENTS', response.data.comments);
+                if (response.data.ok) {
+                    let comment = response.data.comment;
+                    comment.user = state.authUser;
+
+                    let comments = state.comments.slice();
+                    comments.push(response.data.comment);
+
+                    commit('SET_COMMENTS', comments);
+                }
+            });
+    },
+    DELETE_COMMENT({commit, state}, commentId) {
+        return axios.delete(`${BASE_URL}/api/post/comment/${commentId}`)
+            .then(response => {
+                if (response.data.ok) {
+                    let comments = state.comments.filter(item => {
+                        return item._id !== commentId
+                    });
+
+                    commit('SET_COMMENTS', comments)
+                }
             });
     },
     GET_HOT_AUTHORS({commit}) {
-        return axios.get(`${BASE_URL}/api/author/hot`)
+        return axios.get(`${BASE_URL}/api/hot-authors`)
             .then(response => {
                 if (response.data.ok)
                     commit('SET_HOT_AUTHORS', response.data.authors);
             });
     },
     GET_HOT_POSTS({commit}) {
-        return axios.get(`${BASE_URL}/api/posts/hot`)
+        return axios.get(`${BASE_URL}/api/hot-posts`)
             .then(response => {
                 if (response.data.ok)
                     commit('SET_HOT_POSTS', response.data.posts);
+            });
+    },
+    GET_HOT_TAGS({commit}) {
+        return axios.get(`${BASE_URL}/api/hot-tags`)
+            .then(response => {
+                if (response.data.ok)
+                    commit('SET_HOT_TAGS', response.data.tags);
+            });
+    },
+    GET_TAGS({commit}) {
+        return axios.get(`${BASE_URL}/api/tags`)
+            .then(response => {
+                if (response.data.ok)
+                    commit('SET_TAGS', response.data.tags);
+            });
+    },
+    GET_TAG_POSTS({commit}, tag) {
+        return axios.get(`${BASE_URL}/api/tag-posts/${tag}`)
+            .then(response => {
+                if (response.data.ok)
+                    commit('SET_TAG_POSTS', response.data.posts);
             });
     }
 };

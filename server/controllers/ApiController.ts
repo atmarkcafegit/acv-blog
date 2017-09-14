@@ -6,18 +6,33 @@ import {Error, Result} from "../core/common/Response";
 import {Data} from "../core/decorators/parameters/Data";
 import {Param} from "../core/decorators/parameters/Param";
 import {Post} from "../core/decorators/methods/Post";
-import {Session} from "../core/decorators/parameters/Session";
 import {CommentModel} from '../models/CommentModel';
+import {Delete} from "../core/decorators/methods/Delete";
+import * as express from 'express'
 
 const PAGE_LIMIT = 5;
+
+const auth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    if ((req as any).session.authUser)
+        return next();
+    else {
+        res.status(403).json({
+            ok: false,
+            message: 'Unauthorized'
+        })
+    }
+};
 
 @Controller('api')
 class ApiController {
 
     @Get('posts')
-    private async posts(@Param('page', true) page: number) {
+    private async getPosts(@Param('page', true) page: number) {
         let posts = await PostModel.paginate({}, {
             page: page ? page : 1,
+            sort: {
+                createdAt: '-1'
+            },
             populate: 'user',
             limit: PAGE_LIMIT
         });
@@ -31,23 +46,25 @@ class ApiController {
         }
     }
 
-    @Post('post')
-    private async post(@Data('title') title: string,
-                       @Data('content') content: string,
-                       @Session() session: any) {
+    @Post('post', [auth])
+    private async addPost(@Data('title') title: string,
+                          @Data('content') content: string,
+                          @Data('tags') tags: [string],
+                          @Data('userId') userId: string) {
 
         let post = await PostModel.create({
             title: title,
             content: content,
-            user: session.authUser._id
+            tags: tags,
+            user: userId
         });
 
         if (post) {
-            let user = await UserModel.findById(session.authUser._id);
+            let user = await UserModel.findById(userId);
 
             if (user) {
                 user.posts.push(post);
-                user.save();
+                await user.save();
 
                 return new Result();
             } else {
@@ -76,7 +93,7 @@ class ApiController {
         }
     }
 
-    @Post('post/comment')
+    @Post('post/comment', [auth])
     private async addComment(@Data('content') content: string,
                              @Data('userId') userId: string,
                              @Data('postId') postId: string) {
@@ -86,27 +103,36 @@ class ApiController {
             post: postId
         });
 
-        let post = await (PostModel
-            .findById(postId) as any)
-            .deepPopulate(['comments']);
+        let post = await PostModel.findById(postId);
 
         if (comment && post) {
             post.comments.push(comment);
             await post.save();
 
-            return new Result('comments', post.comments);
+            return new Result('comment', comment);
         } else {
             return new Error(500, "Internal server error.");
         }
     }
 
-    @Get('author/hot')
-    private async getHotAuthor() {
+    @Delete('post/comment', [auth])
+    private async deleteComment(@Param('commentId') commentId: string) {
+        await CommentModel.findOneAndRemove({
+            _id: commentId
+        });
+
+        await PostModel.update({comments: commentId}, {$pull: {comments: commentId}});
+
+        return new Result()
+    }
+
+    @Get('hot-authors')
+    private async getHotAuthors() {
         let posts = await PostModel.aggregate(
-            { $group: {_id: '$user', numberViews: {$sum: '$views'}}},
-            { $sort: {numberViews: -1} },
-            { $limit : 5 }
-        )
+            {$group: {_id: '$user', numberViews: {$sum: '$views'}}},
+            {$sort: {numberViews: -1}},
+            {$limit: 5}
+        );
 
         if (posts.length === 0) {
             return new Error(404, "No author.");
@@ -118,21 +144,69 @@ class ApiController {
             user.push(posts[i]['_id']);
         }
 
-        let users = await UserModel.find({ _id: { "$in" : user} });
+        let users = await UserModel.find({_id: {"$in": user}});
 
-        if (users) {
-            return new Result('authors', users);
-        }
+        return new Result('authors', users);
     }
 
-    @Get('posts/hot')
-    private async getHotPost() {
-        let posts = await PostModel.find(
-            { $sort: {views: -1} },
-            { $limit : 5 }
-        )
+    @Get('hot-posts')
+    private async getHotPosts() {
+        let posts = await PostModel.find({},
+            ['_id', 'slug', 'title', 'views', 'createdAt', 'updatedAt'])
+            .sort({views: -1}).limit(5);
+
+        return new Result('posts', posts);
+    }
+
+    @Get('hot-tags')
+    private async getHotTags() {
+        let tags = await PostModel.aggregate([
+            {"$unwind": "$tags"},
+            {
+                "$group": {
+                    "_id": "$tags",
+                    "count": {"$sum": 1}
+                }
+            },
+            {"$sort": {"_id": -1}},
+            {"$limit": 10}
+        ]);
+
+        return new Result('tags', tags);
+    }
+
+    @Get('tags')
+    private async getTags() {
+        let tags = await PostModel.aggregate([
+            {"$unwind": "$tags"},
+            {
+                "$group": {
+                    "_id": "$tags",
+                    "count": {"$sum": 1}
+                }
+            },
+            {"$sort": {"_id": -1}}
+        ]);
+
+        return new Result('tags', tags);
+    }
+
+    @Get('tag-posts')
+    private async getTagPosts(@Param('tag') tag: string, @Param('page', true) page: number) {
+        let posts = await PostModel.paginate({tags: tag}, {
+            page: page ? page : 1,
+            sort: {
+                createdAt: '-1'
+            },
+            populate: 'user',
+            limit: PAGE_LIMIT
+        });
 
         if (posts) {
+            if (posts.docs.length === 0) {
+                return new Error(404, "No post.");
+            }
+
             return new Result('posts', posts);
         }
     }
