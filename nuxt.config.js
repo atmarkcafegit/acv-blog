@@ -3,7 +3,7 @@ module.exports = {
         title: "Atmarkcafe's Blog",
         meta: [
             {charset: 'utf-8'},
-            {name: 'viewport', content: 'width=device-width, initial-scale=1'},
+            {name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui'},
             {hid: 'description', content: "Atmarkcafe's Blog"}
         ],
         link: [
@@ -25,8 +25,10 @@ module.exports = {
         color: 'green',
         height: '2px'
     },
+    cache: true,
     plugins: ['~plugins/plugins.ts'],
     build: {
+        extractCSS: true,
         vendor: ['axios'],
         extend(config, {isClient}) {
             config.module.rules.push({
