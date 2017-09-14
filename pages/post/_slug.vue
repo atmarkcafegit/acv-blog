@@ -155,8 +155,13 @@
                 content: null
             }
         },
-        fetch({store, route}) {
-            return store.dispatch('GET_POST', route.params.slug);
+        async fetch({store, route}) {
+            try {
+                await store.dispatch('GET_POST', route.params.slug);
+            }
+            catch (e) {
+
+            }
         },
         computed: {
             post() {

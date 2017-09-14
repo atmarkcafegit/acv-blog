@@ -11,7 +11,12 @@
 <script>
     export default {
         async fetch({store}) {
-            await store.dispatch('GET_TAGS');
+            try {
+                await store.dispatch('GET_TAGS');
+            }
+            catch (e) {
+
+            }
         },
         computed: {
             tags() {

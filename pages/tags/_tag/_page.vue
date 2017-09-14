@@ -112,7 +112,12 @@
 <script>
     export default {
         async fetch({store, route}) {
-            await store.dispatch('GET_TAG_POSTS', route.params.tag);
+            try {
+                await store.dispatch('GET_TAG_POSTS', route.params.tag);
+            }
+            catch (e) {
+
+            }
         },
         computed: {
             posts() {
