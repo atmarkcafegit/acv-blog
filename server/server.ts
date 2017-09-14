@@ -12,7 +12,7 @@ const uri = 'mongodb://localhost:27017/acv_blog';
 
 mongoose.connect(uri).then(() => {
     const server = new WebServer(config);
-    server.setPort(3000);
+    server.setPort(3001);
     server.start();
 
 }).catch(e => {

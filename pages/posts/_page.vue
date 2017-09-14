@@ -155,10 +155,15 @@
 <script>
     export default {
         async fetch({store, route}) {
-            await store.dispatch('GET_POSTS', route.params.page ? parseInt(route.params.page) : null);
-            await store.dispatch('GET_HOT_AUTHORS');
-            await store.dispatch('GET_HOT_POSTS');
-            await store.dispatch('GET_HOT_TAGS');
+            try {
+                await store.dispatch('GET_POSTS', route.params.page ? parseInt(route.params.page) : null);
+                await store.dispatch('GET_HOT_AUTHORS');
+                await store.dispatch('GET_HOT_POSTS');
+                await store.dispatch('GET_HOT_TAGS');
+            }
+            catch (e) {
+
+            }
         },
         computed: {
             posts() {
