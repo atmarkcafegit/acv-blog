@@ -155,13 +155,11 @@
                 content: null
             }
         },
-        async fetch({store, route}) {
-            try {
-                await store.dispatch('GET_POST', route.params.slug);
-            }
-            catch (e) {
-
-            }
+        fetch({store, route}) {
+            return Promise.all([
+                store.dispatch('GET_POST', route.params.slug)
+            ]).catch(e => {
+            })
         },
         computed: {
             post() {
