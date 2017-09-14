@@ -153,17 +153,32 @@
     </div>
 </template>
 <script>
+    import async from 'async'
+
     export default {
         async fetch({store, route}) {
-            try {
-                await store.dispatch('GET_POSTS', route.params.page ? parseInt(route.params.page) : null);
-                await store.dispatch('GET_HOT_AUTHORS');
-                await store.dispatch('GET_HOT_POSTS');
-                await store.dispatch('GET_HOT_TAGS');
-            }
-            catch (e) {
+           await  new Promise((reject, resolve) => {
+                async.parallel({
+                    getHotAuthors: (cb) => {
+                        store.dispatch('GET_HOT_AUTHORS').then(cb).catch(cb);
+                    },
+                    getHotPosts: (cb) => {
+                        store.dispatch('GET_HOT_POSTS').then(cb).catch(cb);
+                    },
+                    getHotTags: (cb) => {
+                        store.dispatch('GET_HOT_TAGS').then(cb).catch(cb);
+                    },
+                    getPosts: (cb) => {
+                        store.dispatch('GET_POSTS', route.params.page ? parseInt(route.params.page) : null).then(cb).catch(cb);
+                    }
+                }, (e) => {
+                    if (e) {
+                        reject(e)
+                    }
 
-            }
+                    resolve()
+                });
+            })
         },
         computed: {
             posts() {
