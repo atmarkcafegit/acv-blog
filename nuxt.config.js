@@ -10,6 +10,8 @@ module.exports = {
                 name: 'viewport',
                 content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui'
             },
+            {name: 'robots', content: 'noindex, nofollow'},
+            {name: 'googlebot', content: 'noindex, nofollow'},
             {hid: 'description', content: "Atmarkcafe's Blog"}
         ],
         link: [
