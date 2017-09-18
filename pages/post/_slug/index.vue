@@ -43,6 +43,11 @@
                                     <span v-if="isAuth" class="hidden-xs">
                                         <nuxt-link :to="'/post/' + $route.params.slug + '/edit'" style="color: #0288d1">Sửa</nuxt-link>
                                     </span>
+                                    <small v-if="isLogged && !isAuth" class="hidden-xs">&#124;</small>
+                                    <span v-if="isLogged && !isAuth" class="hidden-xs">
+                                        <a v-if="!isLiked" href="#" style="color: #0288d1" @click.stop="like">Like</a>
+                                        <a v-else="" href="#" style="color: #0288d1" @click.stop="unlike">Unlike</a>
+                                    </span>
                                 </div><!-- end meta -->
 
                                 <div class="post-sharing">
@@ -201,6 +206,9 @@
             isAuth() {
                 return !!this.$store.state.authUser &&
                     this.$store.state.authUser.username === this.$store.state.post.user.username;
+            },
+            isLiked() {
+                return this.$store.state.liked;
             }
         },
         mounted() {
@@ -228,6 +236,18 @@
             },
             deleteComment(id) {
                 this.$store.dispatch('DELETE_COMMENT', id);
+            },
+            like() {
+                this.$store.dispatch('LIKE', {
+                    userId: this.$store.state.authUser._id,
+                    postId: this.post._id
+                });
+            },
+            unlike() {
+                this.$store.dispatch('UNLIKE', {
+                    userId: this.$store.state.authUser._id,
+                    postId: this.post._id
+                });
             }
         }
     }

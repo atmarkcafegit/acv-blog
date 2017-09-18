@@ -13,43 +13,47 @@ export const state = () => ({
     hotTags: [],
     tags: [],
     tagPosts: [],
-    authors: []
+    authors: [],
+    liked: false
 });
 
 export const mutations = {
-    SET_USER: function (state, user) {
+    SET_USER(state, user) {
         state.authUser = user
     },
-    SET_POSTS: function (state, posts) {
+    SET_POSTS(state, posts) {
         state.posts = posts;
     },
     REMOVE_POST(state, post) {
-        let cp =  state.posts.docs.indexOf(post);
+        let cp = state.posts.docs.indexOf(post);
         state.posts.docs.splice(cp, 1);
     },
-    SET_POST: function (state, post) {
+    SET_POST(state, post) {
         state.post = post;
     },
-    SET_COMMENTS: function (state, comments) {
+    SET_COMMENTS(state, comments) {
         state.comments = comments;
     },
-    SET_HOT_AUTHORS: function (state, authors) {
+    SET_HOT_AUTHORS(state, authors) {
         state.authors = authors;
     },
-    SET_HOT_POSTS: function (state, posts) {
+    SET_HOT_POSTS(state, posts) {
         state.hotPosts = posts;
     },
-    SET_HOT_TAGS: function (state, tags) {
+    SET_HOT_TAGS(state, tags) {
         state.hotTags = tags;
     },
     SET_TAGS(state, tags) {
         state.tags = tags;
     },
-    SET_TAG_POSTS: function (state, posts) {
+    SET_TAG_POSTS(state, posts) {
         state.tagPosts = posts;
     },
-    SET_LAST_ROUTE: function (state, route) {
+    SET_LAST_ROUTE(state, route) {
         state.lastRoute = route;
+    },
+    SET_LIKED(state, liked) {
+        state.liked = liked;
     }
 };
 
@@ -91,12 +95,15 @@ export const actions = {
     ADD_POST({}, post) {
         return axios.post(`${BASE_URL}/api/post`, post);
     },
-    GET_POST({commit}, slug) {
+    GET_POST({commit, state}, slug) {
         return axios.get(`${BASE_URL}/api/post/${slug}`)
             .then(response => {
                 if (response.data.ok) {
                     commit('SET_POST', response.data.post);
                     commit('SET_COMMENTS', response.data.post.comments);
+
+                    let index = (!!state.post.vote ? state.post.votes.indexOf(state.authUser._id) : -1);
+                    commit('SET_LIKED', index !== -1);
                 }
             });
     },
@@ -176,5 +183,17 @@ export const actions = {
                 if (response.data.ok)
                     commit('SET_TAG_POSTS', response.data.posts);
             });
+    },
+    LIKE({commit}, data) {
+        return axios.post(`${BASE_URL}/api/post/vote`, data)
+            .then(() => {
+                commit('SET_LIKED', true);
+            })
+    },
+    UNLIKE({commit}, data) {
+        return axios.post(`${BASE_URL}/api/post/unvote`, data)
+            .then(() => {
+                commit('SET_LIKED', false);
+            })
     }
 };
