@@ -104,7 +104,7 @@
             return {
                 tabs: [
                     {id: 0, text: 'BÀI VIẾT', path: '/posts'},
-                    {id: 1, text: 'THẺ TAGS', path: '/tags'}
+                    {id: 1, text: 'THẺ TAG', path: '/tags'}
                 ]
             }
         },

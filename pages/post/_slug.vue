@@ -139,6 +139,28 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-3 col-sm-3 col-xs-12 m22 single-post">
+                <div class="avatar">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <img src="~/static/avatar_128x128.png" width="128"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <span class="name"><h4>{{post.user.username}}</h4></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <span class="score"><h4>Bài viết<br>{{post.user.posts.length}}</h4></span>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="score"><h4>Điểm số<br>0</h4></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -201,3 +223,18 @@
         }
     }
 </script>
+<style scoped>
+    .avatar {
+        margin-top: 30px;
+        text-align: center;
+        padding: 10px;
+    }
+
+    .name h4 {
+        font-weight: 700 !important;
+    }
+
+    .score h4 {
+        font-weight: 300;
+    }
+</style>
