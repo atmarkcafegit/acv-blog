@@ -39,7 +39,7 @@
                     <div class="row form-group">
                         <div class="col-md-12 text-center">
                             <button class="btn btn-primary">Gửi bài</button>
-                            <a style="margin-left: 5px" class="btn btn-default" @click="cancel">Hủy</a>
+                            <a style="margin-left: 5px" class="btn btn-default" @click="cancel">Bỏ qua</a>
                         </div>
                     </div>
                 </form>
