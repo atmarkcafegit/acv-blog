@@ -1,4 +1,5 @@
 import axios from 'axios'
+import * as _ from 'lodash'
 
 const BASE_URL = process.env.baseUrl;
 
@@ -21,6 +22,10 @@ export const mutations = {
     },
     SET_POSTS: function (state, posts) {
         state.posts = posts;
+    },
+    REMOVE_POST(state, post) {
+        let cp =  state.posts.docs.indexOf(post);
+        state.posts.docs.splice(cp, 1);
     },
     SET_POST: function (state, post) {
         state.post = post;
@@ -83,6 +88,9 @@ export const actions = {
                     commit('SET_POSTS', response.data.posts);
             });
     },
+    ADD_POST({}, post) {
+        return axios.post(`${BASE_URL}/api/post`, post);
+    },
     GET_POST({commit}, slug) {
         return axios.get(`${BASE_URL}/api/post/${slug}`)
             .then(response => {
@@ -91,6 +99,22 @@ export const actions = {
                     commit('SET_COMMENTS', response.data.post.comments);
                 }
             });
+    },
+    UPDATE_POST({}, {slug, title, content, tags}) {
+        return axios.put(`${BASE_URL}/api/post/${slug}`, {
+            title: title,
+            content: content,
+            tags: tags
+        });
+    },
+    DELETE_POST({commit, state}, slug) {
+        return axios.delete(`${BASE_URL}/api/post/${slug}`).then(() => {
+            let cp = _.find(state.posts.docs, item => {
+                return (item as any).slug === slug
+            });
+
+            commit('REMOVE_POST', cp)
+        })
     },
     ADD_COMMENT({commit, state}, comment) {
         return axios.post(`${BASE_URL}/api/post/comment`, comment)

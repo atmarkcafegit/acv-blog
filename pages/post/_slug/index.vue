@@ -36,8 +36,13 @@
                                     <span class="hidden-xs"><a href="#comments"><i
                                             class="fa fa-comments-o"></i> {{ post.user.comments }} </a></span>
                                     <small class="hidden-xs">&#124;</small>
-                                    <span class="hidden-xs"><a href="#"><i class="fa fa-eye"></i> {{ post.views
-                                        }}</a></span>
+                                    <span class="hidden-xs">
+                                        <a href="#"><i class="fa fa-eye"></i>{{ post.views}}</a>
+                                    </span>
+                                    <small v-if="isAuth" class="hidden-xs">&#124;</small>
+                                    <span v-if="isAuth" class="hidden-xs">
+                                        <nuxt-link :to="'/post/' + $route.params.slug + '/edit'" style="color: #0288d1">Sửa</nuxt-link>
+                                    </span>
                                 </div><!-- end meta -->
 
                                 <div class="post-sharing">
@@ -165,7 +170,7 @@
     </div>
 </template>
 <script>
-    import editor from '../../components/editor.vue'
+    import editor from '../../../components/editor.vue'
     import * as _ from 'lodash'
 
     export default {
@@ -190,8 +195,12 @@
             comments() {
                 return this.$store.state.comments;
             },
-            isLogged: function () {
+            isLogged() {
                 return !!this.$store.state.authUser;
+            },
+            isAuth() {
+                return !!this.$store.state.authUser &&
+                    this.$store.state.authUser.username === this.$store.state.post.user.username;
             }
         },
         mounted() {

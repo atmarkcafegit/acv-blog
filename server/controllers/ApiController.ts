@@ -8,6 +8,7 @@ import {Param} from "../core/decorators/parameters/Param";
 import {Post} from "../core/decorators/methods/Post";
 import {CommentModel} from '../models/CommentModel';
 import {Delete} from "../core/decorators/methods/Delete";
+import {Put} from "../core/decorators/methods/Put";
 import * as express from 'express'
 
 const PAGE_LIMIT = 5;
@@ -91,6 +92,31 @@ class ApiController {
         } else {
             return new Error(404, "Post not found.");
         }
+    }
+
+    @Put('post', [auth])
+    private async updatePost(@Param('slug') slug: string,
+                             @Data('title') title: string,
+                             @Data('content') content: string,
+                             @Data('tags') tags: [string]) {
+        let post = await PostModel.findOneAndUpdate({slug: slug}, {
+            $set: {
+                title: title,
+                content: content,
+                tags: tags
+            }
+        }, {upsert: true});
+
+        if (post)
+            return new Result();
+        else
+            return new Error(500, "Internal server error.");
+    }
+
+    @Delete('post')
+    private async deletePost(@Param('slug') slug: string) {
+        await PostModel.remove({slug: slug});
+        return new Result();
     }
 
     @Post('post/comment', [auth])

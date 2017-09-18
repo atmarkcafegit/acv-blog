@@ -1,6 +1,6 @@
 module.exports = {
     env: {
-        baseUrl: 'http://blog.pgcafe.asia'
+        baseUrl: 'http://localhost:3001'
     },
     head: {
         title: "Atmarkcafe's Blog",
