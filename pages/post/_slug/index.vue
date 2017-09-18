@@ -158,10 +158,10 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <span class="score"><h4>Bài viết<br>{{post.user.posts.length}}</h4></span>
+                            <span class="score"><h4>Bài viết<br>{{post.user.posts ? post.user.posts.length : 0}}</h4></span>
                         </div>
                         <div class="col-md-6">
-                            <span class="score"><h4>Điểm số<br>0</h4></span>
+                            <span class="score"><h4>Điểm số<br>{{post.user.score ? post.user.score.length : 0}}</h4></span>
                         </div>
                     </div>
                 </div>

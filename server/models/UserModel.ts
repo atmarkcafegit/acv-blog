@@ -11,6 +11,7 @@ export interface IUserModel extends mongoose.Document {
     password: string,
     email: string,
     posts: Array<IPostModel>,
+    score: Array<IPostModel>,
     createdAt: Date,
     updatedAt: Date,
 
@@ -22,6 +23,7 @@ export const UserSchema = new Schema({
     password: {type: String, required: true},
     email: {type: String},
     posts: [{type: Schema.Types.ObjectId, ref: 'Post'}],
+    score: [{type: Schema.Types.ObjectId, ref: 'Post'}],
     createdAt: {type: Date},
     updatedAt: {type: Date}
 });
@@ -52,7 +54,7 @@ UserSchema.pre('save', function (next) {
 });
 
 UserSchema.methods.comparePassword = async function (candidatePassword) {
-   return await bcrypt.compare(candidatePassword, this.password);
+    return await bcrypt.compare(candidatePassword, this.password);
 };
 
 UserSchema.methods.toJSON = function () {

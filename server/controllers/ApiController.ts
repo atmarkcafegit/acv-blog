@@ -11,13 +11,15 @@ import {Delete} from "../core/decorators/methods/Delete";
 import {Put} from "../core/decorators/methods/Put";
 import * as express from 'express'
 
+import * as _ from 'lodash'
+
 const PAGE_LIMIT = 5;
 
 const auth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
     if ((req as any).session.authUser)
         return next();
     else {
-        res.status(403).json({
+        res.status(401).json({
             ok: false,
             message: 'Unauthorized'
         })
@@ -113,7 +115,7 @@ class ApiController {
             return new Error(500, "Internal server error.");
     }
 
-    @Delete('post')
+    @Delete('post', [auth])
     private async deletePost(@Param('slug') slug: string) {
         let post = await PostModel.findOneAndRemove({slug: slug}).populate('user');
         let user = post.user;
@@ -121,6 +123,63 @@ class ApiController {
         await user.save();
 
         return new Result();
+    }
+
+    @Post('post/vote', [auth])
+    private async vote(@Data('userId') userId: string,
+                       @Data('postId') postId: string) {
+        let [user, post] = await Promise.all([
+            UserModel.findById(userId),
+            PostModel.findById(postId)
+        ]);
+
+        if (user && post) {
+            let p = _.find(user.score, x => {
+                return x.toString() == postId;
+            });
+
+            let u = _.find(post.votes, x => {
+                return x.toString() == userId;
+            });
+
+            if (!p) {
+                user.score.push(post);
+                user.save();
+            }
+
+            if (!u) {
+                post.votes.push(user);
+                post.save();
+            }
+
+            return new Result();
+        }
+
+        return new Error(500, "Internal server error.");
+    }
+
+    @Post('post/unvote', [auth])
+    private async unvote(@Data('userId') userId: string,
+                         @Data('postId') postId: string) {
+
+        let [user, post] = await Promise.all([
+            UserModel.findById(userId),
+            PostModel.findById(postId)
+        ]);
+
+        if (user && post) {
+            let p = user.score.indexOf(post._id);
+            user.score.splice(p, 1);
+            user.save();
+
+            let q = post.votes.indexOf(user._id);
+            post.votes.splice(q, 1);
+            post.save();
+
+            return new Result();
+        }
+
+        return new Error(500, "Internal server error.");
     }
 
     @Post('post/comment', [auth])
