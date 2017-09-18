@@ -115,7 +115,11 @@ class ApiController {
 
     @Delete('post')
     private async deletePost(@Param('slug') slug: string) {
-        await PostModel.remove({slug: slug});
+        let post = await PostModel.findOneAndRemove({slug: slug}).populate('user');
+        let user = post.user;
+        user.posts.remove(post);
+        await user.save();
+        
         return new Result();
     }
 
