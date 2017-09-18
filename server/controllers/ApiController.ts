@@ -119,7 +119,7 @@ class ApiController {
         let user = post.user;
         user.posts.remove(post);
         await user.save();
-        
+
         return new Result();
     }
 

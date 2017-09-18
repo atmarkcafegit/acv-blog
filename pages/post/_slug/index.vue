@@ -144,7 +144,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-3 col-xs-12 m22 single-post">
+            <div class="col-md-3 col-sm-3 col-xs-12 m22 single-post" style="background-color: #ddd">
                 <div class="avatar">
                     <div class="row">
                         <div class="col-md-12">
