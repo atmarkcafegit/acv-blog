@@ -2,6 +2,7 @@ import {Controller} from "../core/decorators/controllers/Controller";
 import {Get} from "../core/decorators/methods/Get";
 import {PostModel} from "../models/PostModel";
 import {UserModel} from "../models/UserModel";
+import {IScoreModel, ScoreModel} from "../models/ScoreModel";
 import {Error, Result} from "../core/common/Response";
 import {Data} from "../core/decorators/parameters/Data";
 import {Param} from "../core/decorators/parameters/Param";
@@ -10,7 +11,7 @@ import {CommentModel} from '../models/CommentModel';
 import {Delete} from "../core/decorators/methods/Delete";
 import {Put} from "../core/decorators/methods/Put";
 import * as express from 'express'
-
+import * as moment from 'moment'
 import * as _ from 'lodash'
 
 const PAGE_LIMIT = 5;
@@ -81,7 +82,7 @@ class ApiController {
     @Get('post')
     private async getPost(@Param('slug') slug: string) {
         let post = await (PostModel.findOne({slug: slug}) as any)
-            .deepPopulate(['user', 'comments', 'comments.user']);
+            .deepPopulate(['user', 'user.score', 'comments', 'comments.user']);
 
         if (post) {
             if (!post.views)
@@ -130,29 +131,43 @@ class ApiController {
                        @Data('postId') postId: string) {
         let [user, post] = await Promise.all([
             UserModel.findById(userId),
-            PostModel.findById(postId)
+            (PostModel.findById(postId) as any).deepPopulate(['user', 'user.score'])
         ]);
 
         if (user && post) {
-            let p = _.find(user.score, x => {
-                return x.toString() == postId;
+            let existUser = _.find(post.votes, user => {
+                return user.toString() == userId;
             });
 
-            let u = _.find(post.votes, x => {
-                return x.toString() == userId;
-            });
-
-            if (!p) {
-                user.score.push(post);
-                user.save();
-            }
-
-            if (!u) {
+            if (!existUser) {
                 post.votes.push(user);
                 post.save();
+
+                let month = moment(post.createdAt).format('YYYY-MM');
+                let score: IScoreModel = _.find(post.user.score, score => {
+                    return (score as IScoreModel).month === month;
+                }) as IScoreModel;
+
+                if (score) {
+                    score.value += 100;
+                    score.save();
+                } else {
+                    score = new ScoreModel({
+                        month: month,
+                        value: 100,
+                        user: post.user
+                    });
+
+                    await score.save();
+
+                    post.user.score.push(score);
+                    post.user.save();
+                }
+
+                return new Result('score', score.value);
             }
 
-            return new Result();
+            return new Result('score', 0);
         }
 
         return new Error(500, "Internal server error.");
@@ -164,19 +179,29 @@ class ApiController {
 
         let [user, post] = await Promise.all([
             UserModel.findById(userId),
-            PostModel.findById(postId)
+            (PostModel.findById(postId) as any).deepPopulate(['user', 'user.score'])
         ]);
 
         if (user && post) {
-            let p = user.score.indexOf(post._id);
-            user.score.splice(p, 1);
-            user.save();
+            let existUserIndex = post.votes.indexOf(user._id);
+            if (existUserIndex !== -1) {
+                post.votes.splice(existUserIndex, 1);
+                post.save();
 
-            let q = post.votes.indexOf(user._id);
-            post.votes.splice(q, 1);
-            post.save();
+                let month = moment(post.createdAt).format('YYYY-MM');
+                let score: IScoreModel = _.find(post.user.score, score => {
+                    return (score as IScoreModel).month === month;
+                }) as IScoreModel;
 
-            return new Result();
+                if (score) {
+                    score.value -= 100;
+                    score.save();
+
+                    return new Result('score', score.value);
+                }
+            }
+
+            return new Result('score', 0);
         }
 
         return new Error(500, "Internal server error.");

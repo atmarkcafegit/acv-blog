@@ -1,4 +1,5 @@
 import axios from 'axios'
+import * as moment from 'moment'
 import * as _ from 'lodash'
 
 const BASE_URL = process.env.baseUrl;
@@ -14,7 +15,8 @@ export const state = () => ({
     tags: [],
     tagPosts: [],
     authors: [],
-    liked: false
+    liked: false,
+    score: 0
 });
 
 export const mutations = {
@@ -54,6 +56,9 @@ export const mutations = {
     },
     SET_LIKED(state, liked) {
         state.liked = liked;
+    },
+    SET_SCORE(state, score) {
+        state.score = score;
     }
 };
 
@@ -102,8 +107,24 @@ export const actions = {
                     commit('SET_POST', response.data.post);
                     commit('SET_COMMENTS', response.data.post.comments);
 
-                    let index = (!!state.post.vote ? state.post.votes.indexOf(state.authUser._id) : -1);
-                    commit('SET_LIKED', index !== -1);
+                    let voteUser = _.find(response.data.post.votes, u => {
+                        return u === state.authUser._id;
+                    });
+
+                    if (voteUser) {
+                        commit('SET_LIKED', true)
+                    } else {
+                        commit('SET_LIKED', false)
+                    }
+
+                    let month = moment(new Date()).format('YYYY-MM');
+                    let score = _.find(response.data.post.user.score, s => {
+                        return (s as any).month === month;
+                    });
+
+                    if (score) {
+                        commit('SET_SCORE', (score as any).value);
+                    }
                 }
             });
     },
@@ -186,14 +207,18 @@ export const actions = {
     },
     LIKE({commit}, data) {
         return axios.post(`${BASE_URL}/api/post/vote`, data)
-            .then(() => {
-                commit('SET_LIKED', true);
+            .then(response => {
+                if (response.data.ok) {
+                    commit('SET_LIKED', true);
+                }
             })
     },
     UNLIKE({commit}, data) {
         return axios.post(`${BASE_URL}/api/post/unvote`, data)
-            .then(() => {
-                commit('SET_LIKED', false);
+            .then(response => {
+                if (response.data.ok) {
+                    commit('SET_LIKED', false);
+                }
             })
     }
 };

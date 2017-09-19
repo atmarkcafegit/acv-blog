@@ -45,8 +45,8 @@
                                     </span>
                                     <small v-if="isLogged && !isAuth" class="hidden-xs">&#124;</small>
                                     <span v-if="isLogged && !isAuth" class="hidden-xs">
-                                        <a v-if="!isLiked" href="#" style="color: #0288d1" @click.stop="like">Like</a>
-                                        <a v-else="" href="#" style="color: #0288d1" @click.stop="unlike">Unlike</a>
+                                        <a v-if="!isLiked" href="#" style="color: #0288d1" @click.stop="like">Thích</a>
+                                        <a v-else="" href="#" style="color: #0288d1" @click.stop="unlike">Bỏ thích</a>
                                     </span>
                                 </div><!-- end meta -->
 
@@ -166,7 +166,7 @@
                             <span class="score"><h4>Bài viết<br>{{post.user.posts ? post.user.posts.length : 0}}</h4></span>
                         </div>
                         <div class="col-md-6">
-                            <span class="score"><h4>Điểm số<br>{{post.user.score ? post.user.score.length : 0}}</h4></span>
+                            <span class="score"><h4>Điểm số<br>{{score}}</h4></span>
                         </div>
                     </div>
                 </div>
@@ -209,6 +209,9 @@
             },
             isLiked() {
                 return this.$store.state.liked;
+            },
+            score() {
+                return !!this.$store.state.score ? this.$store.state.score : 0;
             }
         },
         mounted() {
