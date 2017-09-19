@@ -181,6 +181,7 @@
 <script>
     import editor from '../../../components/editor.vue'
     import * as _ from 'lodash'
+    import * as moment from 'moment'
 
     export default {
         components: {
@@ -215,7 +216,15 @@
                 return this.$store.state.liked;
             },
             score() {
-                return !!this.$store.state.score ? this.$store.state.score : 0;
+                let month = moment(new Date()).format('YYYY-MM');
+                let ms = _.find(this.$store.state.post.user.score, score => {
+                    return score.month === month;
+                });
+
+                if (ms)
+                    return ms.value;
+                else
+                    return 0;
             }
         },
         mounted() {

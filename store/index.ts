@@ -15,8 +15,7 @@ export const state = () => ({
     tags: [],
     tagPosts: [],
     authors: [],
-    liked: false,
-    score: 0
+    liked: false
 });
 
 export const mutations = {
@@ -56,9 +55,6 @@ export const mutations = {
     },
     SET_LIKED(state, liked) {
         state.liked = liked;
-    },
-    SET_SCORE(state, score) {
-        state.score = score;
     }
 };
 
@@ -115,15 +111,6 @@ export const actions = {
                         commit('SET_LIKED', true)
                     } else {
                         commit('SET_LIKED', false)
-                    }
-
-                    let month = moment(new Date()).format('YYYY-MM');
-                    let score = _.find(response.data.post.user.score, s => {
-                        return (s as any).month === month;
-                    });
-
-                    if (score) {
-                        commit('SET_SCORE', (score as any).value);
                     }
                 }
             });
