@@ -141,7 +141,7 @@ class ApiController {
 
             if (!existUser) {
                 post.votes.push(user);
-                post.save();
+                post.save().then();
 
                 let month = moment(post.createdAt).format('YYYY-MM');
                 let score: IScoreModel = _.find(post.user.score, score => {
@@ -150,7 +150,7 @@ class ApiController {
 
                 if (score) {
                     score.value += 100;
-                    score.save();
+                    score.save().then();
                 } else {
                     score = new ScoreModel({
                         month: month,
@@ -195,7 +195,7 @@ class ApiController {
 
                 if (score) {
                     score.value -= 100;
-                    score.save();
+                    score.save().then();
 
                     return new Result('score', score.value);
                 }
@@ -242,23 +242,27 @@ class ApiController {
 
     @Get('hot-authors')
     private async getHotAuthors() {
-        let posts = await PostModel.aggregate(
-            {$group: {_id: '$user', numberViews: {$sum: '$views'}}},
-            {$sort: {numberViews: -1}},
-            {$limit: 5}
-        );
+        let month = moment(new Date()).format('YYYY-MM');
 
-        if (posts.length === 0) {
-            return new Error(404, "No author.");
-        }
+        let users = await UserModel.find().populate({
+            path: 'score',
+            match: {month: month}
+        });
 
-        let user: string[] = [];
+        users = _.take(_.sortBy(users.slice(), user => {
+            if (user.score.length === 0)
+                return 0;
 
-        for (let i = 0, len = posts.length; i < len; i++) {
-            user.push(posts[i]['_id']);
-        }
+            let score = _.find(user.score, score => {
+                return score.month === month;
+            });
 
-        let users = await UserModel.find({_id: {"$in": user}});
+            if (score) {
+                return score.value;
+            }
+
+            return 0;
+        }).reverse(), 5);
 
         return new Result('authors', users);
     }

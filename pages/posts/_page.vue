@@ -61,7 +61,7 @@
             <div class="col-md-3 col-sm-12 col-xs-12 ">
                 <div class="widget">
                     <div class="widget-title">
-                        <h4>Tác giả nổi bật</h4>
+                        <h4>Xếp hạng tháng {{currentMonth}}</h4>
                         <hr>
                     </div>
                     <!-- end widget-title -->
@@ -72,7 +72,19 @@
                             <div v-for="author, index in authors" class="item" style="margin-bottom: 10px">
                                 <div class="block">
                                     <div class="inner avatar">{{ author.username | shortDescription(1) }}</div>
-                                    <div class="inner"><a href="#">{{ author.username }}</a></div>
+                                    <div class="inner">
+                                        <a href="#">{{ author.username }}</a><br>
+                                        <div>
+                                            <span style="font-weight: bold; font-size: 10px; color: #676767">
+                                                Bài viết: {{author.posts ? author.posts.length : 0}}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span style="font-weight: bold; font-size: 10px; color: #676767">
+                                                Điểm số: {{getUserScore(author)}}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -153,6 +165,9 @@
     </div>
 </template>
 <script>
+    import * as moment from 'moment'
+    import * as _ from 'lodash'
+
     export default {
         fetch({store, route}) {
             return Promise.all([
@@ -181,6 +196,9 @@
             },
             hotTags() {
                 return this.$store.state.hotTags;
+            },
+            currentMonth() {
+                return moment(new Date()).month() + 1;
             }
         },
         methods: {
@@ -194,6 +212,17 @@
                 }
 
                 return array;
+            },
+            getUserScore(user) {
+                let month = moment(new Date()).format('YYYY-MM');
+                let score = _.find(user.score, score => {
+                    return score.month === month;
+                });
+
+                if (score)
+                    return score.value;
+                else
+                    return 0;
             }
         }
     }
