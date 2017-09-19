@@ -221,10 +221,16 @@
                     return score.month === month;
                 });
 
+                let totalPostView = 0;
+
+                _.each(this.$store.state.post.user.posts, post => {
+                    totalPostView += Math.floor(post.views / 100);
+                });
+
                 if (ms)
-                    return ms.value;
+                    return ms.value + totalPostView;
                 else
-                    return 0;
+                    return totalPostView;
             }
         },
         mounted() {

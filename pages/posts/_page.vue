@@ -224,10 +224,16 @@
                     return score.month === month;
                 });
 
+                let totalPostView = 0;
+
+                _.each(user.posts, post => {
+                    totalPostView += Math.floor(post.views / 100);
+                });
+
                 if (score)
-                    return score.value;
+                    return score.value + totalPostView;
                 else
-                    return 0;
+                    return totalPostView;
             }
         }
     }

@@ -82,14 +82,14 @@ class ApiController {
     @Get('post')
     private async getPost(@Param('slug') slug: string) {
         let post = await (PostModel.findOne({slug: slug}) as any)
-            .deepPopulate(['user', 'user.score', 'comments', 'comments.user']);
+            .deepPopulate(['user', 'user.score', 'user.posts', 'comments', 'comments.user']);
 
         if (post) {
             if (!post.views)
                 post.views = 0;
 
             post.views += 1;
-            await post.save();
+            post.save();
 
             return new Result('post', post);
         } else {
@@ -247,21 +247,27 @@ class ApiController {
         let users = await UserModel.find().populate({
             path: 'score',
             match: {month: month}
-        });
+        }).populate('posts');
 
         users = _.take(_.sortBy(users.slice(), user => {
+            let totalPostView = 0;
+
+            _.each(user.posts, post => {
+                totalPostView += Math.floor(post.views / 100);
+            });
+
             if (user.score.length === 0)
-                return 0;
+                return totalPostView;
 
             let score = _.find(user.score, score => {
                 return score.month === month;
             });
 
             if (score) {
-                return score.value;
+                return score.value + totalPostView;
             }
 
-            return 0;
+            return totalPostView;
         }).reverse(), 5);
 
         return new Result('authors', users);
