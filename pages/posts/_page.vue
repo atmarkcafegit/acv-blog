@@ -86,7 +86,7 @@
                                         </div>
                                         <div>
                                             <span style="font-weight: bold; font-size: 10px; color: #676767">
-                                                Điểm số: {{getUserScore(author)}}
+                                                Điểm số: {{getScore(author)}}
                                             </span>
                                         </div>
                                     </div>
@@ -173,6 +173,29 @@
     import * as moment from 'moment'
     import * as _ from 'lodash'
 
+    const calcScore = (user, month) => {
+        let postViews = 0;
+
+        _.each(user.posts, post => {
+            postViews += post.views;
+        });
+
+        let viewScore = Math.floor(postViews / 100);
+
+        if (user.score.length === 0)
+            return viewScore;
+
+        let score = _.find(user.score, score => {
+            return score.month === month;
+        });
+
+        if (score) {
+            return score.value + viewScore;
+        }
+
+        return viewScore;
+    };
+
     export default {
         fetch({store, route}) {
             return Promise.all([
@@ -218,22 +241,8 @@
 
                 return array;
             },
-            getUserScore(user) {
-                let month = moment(new Date()).format('YYYY-MM');
-                let score = _.find(user.score, score => {
-                    return score.month === month;
-                });
-
-                let totalPostView = 0;
-
-                _.each(user.posts, post => {
-                    totalPostView += Math.floor(post.views / 100);
-                });
-
-                if (score)
-                    return score.value + totalPostView;
-                else
-                    return totalPostView;
+            getScore(user) {
+                return calcScore(user, moment(new Date()).format('YYYY-MM'))
             }
         }
     }

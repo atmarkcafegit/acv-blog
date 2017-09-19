@@ -41,7 +41,8 @@
                                     </span>
                                     <small class="hidden-xs">&#124;</small>
                                     <span class="hidden-xs">
-                                        <a href="#"><i class="fa fa-thumbs-o-up"></i> {{ post.votes ? post.votes.length : 0}}</a>
+                                        <a href="#"><i
+                                                class="fa fa-thumbs-o-up"></i> {{ post.votes ? post.votes.length : 0}}</a>
                                     </span>
                                     <small v-if="isAuth" class="hidden-xs">&#124;</small>
                                     <span v-if="isAuth" class="hidden-xs">
@@ -183,6 +184,30 @@
     import * as _ from 'lodash'
     import * as moment from 'moment'
 
+
+    const calcScore = (user, month) => {
+        let postViews = 0;
+
+        _.each(user.posts, post => {
+            postViews += post.views;
+        });
+
+        let viewScore = Math.floor(postViews / 100);
+
+        if (user.score.length === 0)
+            return viewScore;
+
+        let score = _.find(user.score, score => {
+            return score.month === month;
+        });
+
+        if (score) {
+            return score.value + viewScore;
+        }
+
+        return viewScore;
+    };
+
     export default {
         components: {
             editor
@@ -216,21 +241,7 @@
                 return this.$store.state.liked;
             },
             score() {
-                let month = moment(new Date()).format('YYYY-MM');
-                let ms = _.find(this.$store.state.post.user.score, score => {
-                    return score.month === month;
-                });
-
-                let totalPostView = 0;
-
-                _.each(this.$store.state.post.user.posts, post => {
-                    totalPostView += Math.floor(post.views / 100);
-                });
-
-                if (ms)
-                    return ms.value + totalPostView;
-                else
-                    return totalPostView;
+                return calcScore(this.$store.state.post.user, moment(new Date()).format('YYYY-MM'))
             }
         },
         mounted() {

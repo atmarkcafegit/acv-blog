@@ -1,7 +1,7 @@
 import {Controller} from "../core/decorators/controllers/Controller";
 import {Get} from "../core/decorators/methods/Get";
 import {PostModel} from "../models/PostModel";
-import {UserModel} from "../models/UserModel";
+import {IUserModel, UserModel} from "../models/UserModel";
 import {IScoreModel, ScoreModel} from "../models/ScoreModel";
 import {Error, Result} from "../core/common/Response";
 import {Data} from "../core/decorators/parameters/Data";
@@ -15,6 +15,29 @@ import * as moment from 'moment'
 import * as _ from 'lodash'
 
 const PAGE_LIMIT = 5;
+
+const calcScore = (user: IUserModel, month) => {
+    let postViews = 0;
+
+    _.each(user.posts, post => {
+        postViews += post.views;
+    });
+
+    let viewScore = Math.floor(postViews / 100);
+
+    if (user.score.length === 0)
+        return viewScore;
+
+    let score = _.find(user.score, score => {
+        return score.month === month;
+    });
+
+    if (score) {
+        return score.value + viewScore;
+    }
+
+    return viewScore;
+};
 
 const auth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
     if ((req as any).session.authUser)
@@ -249,26 +272,7 @@ class ApiController {
             match: {month: month}
         }).populate('posts');
 
-        users = _.take(_.sortBy(users.slice(), user => {
-            let totalPostView = 0;
-
-            _.each(user.posts, post => {
-                totalPostView += Math.floor(post.views / 100);
-            });
-
-            if (user.score.length === 0)
-                return totalPostView;
-
-            let score = _.find(user.score, score => {
-                return score.month === month;
-            });
-
-            if (score) {
-                return score.value + totalPostView;
-            }
-
-            return totalPostView;
-        }).reverse(), 5);
+        users = _.take(_.sortBy(users.slice(), user => calcScore(user, month)).reverse(), 5);
 
         return new Result('authors', users);
     }
