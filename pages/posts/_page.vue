@@ -44,8 +44,13 @@
                                                 class="fa fa-comments-o"></i> {{ post.comments | countData
                                             }} </router-link></span>
                                         <small class="hidden-xs">&#124;</small>
-                                        <span class="hidden-xs"><a href="#"><i class="fa fa-eye"></i> {{ post.views
-                                            }}</a></span>
+                                        <span class="hidden-xs"><a href="#"><i
+                                                class="fa fa-eye"></i> {{ post.views}}</a></span>
+                                        <small class="hidden-xs">&#124;</small>
+                                        <span class="hidden-xs">
+                                            <a href="#"><i
+                                                    class="fa fa-thumbs-o-up"></i> {{ post.votes ? post.votes.length : 0}}</a>
+                                        </span>
                                     </div>
                                     <!-- end meta -->
                                 </div>

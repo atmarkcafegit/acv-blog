@@ -39,6 +39,10 @@
                                     <span class="hidden-xs">
                                         <a href="#"><i class="fa fa-eye"></i>{{ post.views}}</a>
                                     </span>
+                                    <small class="hidden-xs">&#124;</small>
+                                    <span class="hidden-xs">
+                                        <a href="#"><i class="fa fa-thumbs-o-up"></i> {{ post.votes ? post.votes.length : 0}}</a>
+                                    </span>
                                     <small v-if="isAuth" class="hidden-xs">&#124;</small>
                                     <span v-if="isAuth" class="hidden-xs">
                                         <nuxt-link :to="'/post/' + $route.params.slug + '/edit'" style="color: #0288d1">Sửa</nuxt-link>
