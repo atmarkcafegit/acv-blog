@@ -197,6 +197,9 @@
     };
 
     export default {
+        serverCacheKey() {
+            return Math.floor(Date.now() / 10000)
+        },
         async fetch({store, route}) {
             await Promise.all([
                 store.dispatch('GET_POSTS', route.params.page ? parseInt(route.params.page) : null),

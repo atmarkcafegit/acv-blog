@@ -26,6 +26,14 @@ module.exports = {
             {src: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_HTML-full'}
         ]
     },
+    render: {
+        bundleRenderer: {
+            cache: require('lru-cache')({
+                max: 1000,
+                maxAge: 1000 * 60 * 15
+            })
+        }
+    },
     router: {
         mode: 'history'
     },
