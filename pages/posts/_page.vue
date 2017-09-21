@@ -197,8 +197,8 @@
     };
 
     export default {
-        fetch({store, route}) {
-            return Promise.all([
+        async fetch({store, route}) {
+            await Promise.all([
                 store.dispatch('GET_POSTS', route.params.page ? parseInt(route.params.page) : null),
                 store.dispatch('GET_HOT_AUTHORS'),
                 store.dispatch('GET_HOT_POSTS'),
