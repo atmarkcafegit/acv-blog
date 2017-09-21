@@ -1,8 +1,5 @@
-import axios from 'axios'
-import * as moment from 'moment'
+import axios from '../plugins/axios'
 import * as _ from 'lodash'
-
-const BASE_URL = process.env.baseUrl;
 
 export const state = () => ({
     authUser: null,
@@ -65,7 +62,7 @@ export const actions = {
         }
     },
     LOGIN({commit}, {username, password}) {
-        return axios.post(`${BASE_URL}/login`, {
+        return axios.post(`/login`, {
             username,
             password
         }).then((res) => {
@@ -74,30 +71,30 @@ export const actions = {
         });
     },
     LOGOUT({commit}) {
-        return axios.post(`${BASE_URL}/logout`)
+        return axios.post(`/logout`)
             .then(() => {
                 commit('SET_USER', null)
             })
     },
     REGISTER({}, {username, password, email}) {
-        return axios.post(`${BASE_URL}/register`, {
+        return axios.post(`/register`, {
             username,
             password,
             email
         })
     },
     GET_POSTS({commit}, page) {
-        return axios.get(`${BASE_URL}/api/posts/${page ? page : ''}`)
+        return axios.get(`/api/posts/${page ? page : ''}`)
             .then(response => {
                 if (response.data.ok)
                     commit('SET_POSTS', response.data.posts);
             });
     },
     ADD_POST({}, post) {
-        return axios.post(`${BASE_URL}/api/post`, post);
+        return axios.post(`/api/post`, post);
     },
     GET_POST({commit, state}, slug) {
-        return axios.get(`${BASE_URL}/api/post/${slug}`)
+        return axios.get(`/api/post/${slug}`)
             .then(response => {
                 if (response.data.ok) {
                     commit('SET_POST', response.data.post);
@@ -116,14 +113,14 @@ export const actions = {
             });
     },
     UPDATE_POST({}, {slug, title, content, tags}) {
-        return axios.put(`${BASE_URL}/api/post/${slug}`, {
+        return axios.put(`/api/post/${slug}`, {
             title: title,
             content: content,
             tags: tags
         });
     },
     DELETE_POST({commit, state}, slug) {
-        return axios.delete(`${BASE_URL}/api/post/${slug}`).then(() => {
+        return axios.delete(`/api/post/${slug}`).then(() => {
             let cp = _.find(state.posts.docs, item => {
                 return (item as any).slug === slug
             });
@@ -132,7 +129,7 @@ export const actions = {
         })
     },
     ADD_COMMENT({commit, state}, comment) {
-        return axios.post(`${BASE_URL}/api/post/comment`, comment)
+        return axios.post(`/api/post/comment`, comment)
             .then(response => {
                 if (response.data.ok) {
                     let comment = response.data.comment;
@@ -146,7 +143,7 @@ export const actions = {
             });
     },
     DELETE_COMMENT({commit, state}, commentId) {
-        return axios.delete(`${BASE_URL}/api/post/comment/${commentId}`)
+        return axios.delete(`/api/post/comment/${commentId}`)
             .then(response => {
                 if (response.data.ok) {
                     let comments = state.comments.filter(item => {
@@ -158,42 +155,42 @@ export const actions = {
             });
     },
     GET_HOT_AUTHORS({commit}) {
-        return axios.get(`${BASE_URL}/api/hot-authors`)
+        return axios.get(`/api/hot-authors`)
             .then(response => {
                 if (response.data.ok)
                     commit('SET_HOT_AUTHORS', response.data.authors);
             });
     },
     GET_HOT_POSTS({commit}) {
-        return axios.get(`${BASE_URL}/api/hot-posts`)
+        return axios.get(`/api/hot-posts`)
             .then(response => {
                 if (response.data.ok)
                     commit('SET_HOT_POSTS', response.data.posts);
             });
     },
     GET_HOT_TAGS({commit}) {
-        return axios.get(`${BASE_URL}/api/hot-tags`)
+        return axios.get(`/api/hot-tags`)
             .then(response => {
                 if (response.data.ok)
                     commit('SET_HOT_TAGS', response.data.tags);
             });
     },
     GET_TAGS({commit}) {
-        return axios.get(`${BASE_URL}/api/tags`)
+        return axios.get(`/api/tags`)
             .then(response => {
                 if (response.data.ok)
                     commit('SET_TAGS', response.data.tags);
             });
     },
     GET_TAG_POSTS({commit}, tag) {
-        return axios.get(`${BASE_URL}/api/tag-posts/${tag}`)
+        return axios.get(`/api/tag-posts/${tag}`)
             .then(response => {
                 if (response.data.ok)
                     commit('SET_TAG_POSTS', response.data.posts);
             });
     },
     LIKE({commit}, data) {
-        return axios.post(`${BASE_URL}/api/post/vote`, data)
+        return axios.post(`/api/post/vote`, data)
             .then(response => {
                 if (response.data.ok) {
                     commit('SET_LIKED', true);
@@ -201,7 +198,7 @@ export const actions = {
             })
     },
     UNLIKE({commit}, data) {
-        return axios.post(`${BASE_URL}/api/post/unvote`, data)
+        return axios.post(`/api/post/unvote`, data)
             .then(response => {
                 if (response.data.ok) {
                     commit('SET_LIKED', false);
