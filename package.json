@@ -2,17 +2,9 @@
   "name": "acv-blog",
   "description": "Atmarkcafe Blog",
   "dependencies": {
-    "@types/async": "^2.0.42",
-    "@types/lodash": "^4.14.74",
-    "async": "^2.5.0",
     "axios": "^0.16.1",
     "bcrypt": "^1.0.3",
-    "body-parser": "^1.17.2",
-    "cookie-parser": "^1.4.3",
     "cross-env": "^5.0.0",
-    "express": "^4.15.3",
-    "express-session": "^1.15.3",
-    "helmet": "^3.8.1",
     "highlight.js": "^9.12.0",
     "lodash": "^4.17.4",
     "lru-cache": "^4.1.1",
@@ -25,8 +17,7 @@
     "nuxt": "^1.0.0-rc11",
     "q": "^1.5.0",
     "vee-validate": "^2.0.0-rc.9",
-    "vuept": "^1.2.0",
-    "winston": "^2.3.1"
+    "vuept": "^1.2.0"
   },
   "scripts": {
     "dev": "backpack dev",
@@ -34,14 +25,12 @@
     "start": "node build/main.js"
   },
   "devDependencies": {
-    "@types/cookie-parser": "^1.4.1",
-    "@types/helmet": "0.0.36",
     "@types/highlight.js": "^9.1.10",
+    "@types/lodash": "^4.14.74",
     "@types/marked": "^0.3.0",
     "@types/mongoose": "^4.7.21",
     "@types/mongoose-paginate": "^5.0.6",
     "@types/node": "^8.0.26",
-    "@types/winston": "^2.3.6",
     "backpack-core": "^0.4.2",
     "reflect-metadata": "^0.1.10",
     "stylus": "^0.54.5",
