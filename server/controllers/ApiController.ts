@@ -1,15 +1,8 @@
-import {Controller} from "../core/decorators/controllers/Controller";
-import {Get} from "../core/decorators/methods/Get";
+import {Controller, Data, Delete, Error, Get, Param, Post, Put, Result} from "minmin";
 import {PostModel} from "../models/PostModel";
 import {IUserModel, UserModel} from "../models/UserModel";
 import {IScoreModel, ScoreModel} from "../models/ScoreModel";
-import {Error, Result} from "../core/common/Response";
-import {Data} from "../core/decorators/parameters/Data";
-import {Param} from "../core/decorators/parameters/Param";
-import {Post} from "../core/decorators/methods/Post";
 import {CommentModel} from '../models/CommentModel';
-import {Delete} from "../core/decorators/methods/Delete";
-import {Put} from "../core/decorators/methods/Put";
 import * as express from 'express'
 import * as moment from 'moment'
 import * as _ from 'lodash'

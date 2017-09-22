@@ -1,4 +1,4 @@
-import {WebServer} from "./core/WebServer"
+import {WebServer} from "minmin"
 
 import './controllers/IndexController'
 import './controllers/ApiController'
