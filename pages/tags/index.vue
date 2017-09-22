@@ -11,12 +11,10 @@
 <script>
     export default {
         async fetch({store}) {
-            try {
-                await store.dispatch('GET_TAGS');
-            }
-            catch (e) {
-
-            }
+            return Promise.all([
+                store.dispatch('GET_TAGS')
+            ]).catch(e => {
+            })
         },
         computed: {
             tags() {

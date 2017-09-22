@@ -44,8 +44,13 @@
                                                 class="fa fa-comments-o"></i> {{ post.comments | countData
                                             }} </router-link></span>
                                         <small class="hidden-xs">&#124;</small>
-                                        <span class="hidden-xs"><a href="#"><i class="fa fa-eye"></i> {{ post.views
-                                            }}</a></span>
+                                        <span class="hidden-xs"><a href="#"><i
+                                                class="fa fa-eye"></i> {{ post.views}}</a></span>
+                                        <small class="hidden-xs">&#124;</small>
+                                        <span class="hidden-xs">
+                                            <a href="#"><i
+                                                    class="fa fa-thumbs-o-up"></i> {{ post.votes ? post.votes.length : 0}}</a>
+                                        </span>
                                     </div>
                                     <!-- end meta -->
                                 </div>
@@ -61,7 +66,7 @@
             <div class="col-md-3 col-sm-12 col-xs-12 ">
                 <div class="widget">
                     <div class="widget-title">
-                        <h4>Tác giả nổi bật</h4>
+                        <h4>Xếp hạng tháng {{currentMonth}}</h4>
                         <hr>
                     </div>
                     <!-- end widget-title -->
@@ -72,7 +77,19 @@
                             <div v-for="author, index in authors" class="item" style="margin-bottom: 10px">
                                 <div class="block">
                                     <div class="inner avatar">{{ author.username | shortDescription(1) }}</div>
-                                    <div class="inner"><a href="#">{{ author.username }}</a></div>
+                                    <div class="inner">
+                                        <a href="#">{{ author.username }}</a><br>
+                                        <div>
+                                            <span style="font-weight: bold; font-size: 10px; color: #676767">
+                                                Bài viết: {{author.posts ? author.posts.length : 0}}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span style="font-weight: bold; font-size: 10px; color: #676767">
+                                                Điểm số: {{getScore(author)}}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -153,31 +170,43 @@
     </div>
 </template>
 <script>
-    import async from 'async'
+    import * as moment from 'moment'
+    import * as _ from 'lodash'
+
+    const calcScore = (user, month) => {
+        let postViews = 0;
+
+        _.each(user.posts, post => {
+            postViews += post.views;
+        });
+
+        let viewScore = Math.floor(postViews / 100);
+
+        if (user.score.length === 0)
+            return viewScore;
+
+        let score = _.find(user.score, score => {
+            return score.month === month;
+        });
+
+        if (score) {
+            return score.value + viewScore;
+        }
+
+        return viewScore;
+    };
 
     export default {
+        serverCacheKey() {
+            return Math.floor(Date.now() / 10000)
+        },
         async fetch({store, route}) {
-           await  new Promise((reject, resolve) => {
-                async.parallel({
-                    getHotAuthors: (cb) => {
-                        store.dispatch('GET_HOT_AUTHORS').then(cb).catch(cb);
-                    },
-                    getHotPosts: (cb) => {
-                        store.dispatch('GET_HOT_POSTS').then(cb).catch(cb);
-                    },
-                    getHotTags: (cb) => {
-                        store.dispatch('GET_HOT_TAGS').then(cb).catch(cb);
-                    },
-                    getPosts: (cb) => {
-                        store.dispatch('GET_POSTS', route.params.page ? parseInt(route.params.page) : null).then(cb).catch(cb);
-                    }
-                }, (e) => {
-                    if (e) {
-                        reject(e)
-                    }
-
-                    resolve()
-                });
+            await Promise.all([
+                store.dispatch('GET_POSTS', route.params.page ? parseInt(route.params.page) : null),
+                store.dispatch('GET_HOT_AUTHORS'),
+                store.dispatch('GET_HOT_POSTS'),
+                store.dispatch('GET_HOT_TAGS')
+            ]).catch(e => {
             })
         },
         computed: {
@@ -198,6 +227,9 @@
             },
             hotTags() {
                 return this.$store.state.hotTags;
+            },
+            currentMonth() {
+                return moment(new Date()).month() + 1;
             }
         },
         methods: {
@@ -211,6 +243,9 @@
                 }
 
                 return array;
+            },
+            getScore(user) {
+                return calcScore(user, moment(new Date()).format('YYYY-MM'))
             }
         }
     }

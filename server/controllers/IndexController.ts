@@ -1,9 +1,5 @@
-import {Controller} from "../core/decorators/controllers/Controller";
-import {Post} from "../core/decorators/methods/Post";
+import {Controller, Data, Error, Post, Result, Session} from "minmin";
 import {UserModel} from "../models/UserModel";
-import {Data} from "../core/decorators/parameters/Data";
-import {Session} from "../core/decorators/parameters/Session";
-import {Error, Result} from "../core/common/Response";
 
 @Controller()
 class IndexController {

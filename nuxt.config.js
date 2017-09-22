@@ -1,6 +1,7 @@
 module.exports = {
     env: {
-        baseUrl: 'http://blog.pgcafe.asia'
+        baseUrl: 'https://blog.pgcafe.asia',
+        baseUrlServer: 'http://localhost:3001'
     },
     head: {
         title: "Atmarkcafe's Blog",
@@ -10,6 +11,8 @@ module.exports = {
                 name: 'viewport',
                 content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui'
             },
+            {name: 'robots', content: 'noindex, nofollow'},
+            {name: 'googlebot', content: 'noindex, nofollow'},
             {hid: 'description', content: "Atmarkcafe's Blog"}
         ],
         link: [
@@ -23,6 +26,14 @@ module.exports = {
         script: [
             {src: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_HTML-full'}
         ]
+    },
+    render: {
+        bundleRenderer: {
+            cache: require('lru-cache')({
+                max: 1000,
+                maxAge: 1000 * 60 * 15
+            })
+        }
     },
     router: {
         mode: 'history'

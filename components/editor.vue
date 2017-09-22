@@ -107,10 +107,17 @@
         outline: none !important;
         box-shadow: none !important;
         resize: none;
+        overflow-y: scroll;
     }
 
     .contentPreview {
-        min-height: 570px !important;
+        height: 570px;
+        overflow-y: scroll;
+    }
+
+    .preview {
+        height: auto !important;
+        overflow: hidden;
     }
 
     .contentPreview .table {

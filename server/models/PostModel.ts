@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose';
 import {Schema} from 'mongoose';
 import {ICommentModel} from './CommentModel';
 import * as mongoosePaginate from 'mongoose-paginate';
+import {IUserModel} from "~/server/models/UserModel";
 
 const mongooseDeepPopulate = require('mongoose-deep-populate')(mongoose);
 
@@ -11,7 +12,7 @@ export interface IPostModel extends mongoose.Document {
     content: string,
     user: any,
     views: number,
-    vote: number,
+    votes: Array<IUserModel>,
     comments: Array<ICommentModel>,
     tags: Array<string>,
     createdAt: Date,
@@ -24,7 +25,7 @@ const PostSchema = new Schema({
     content: {type: String, required: true},
     user: {type: Schema.Types.ObjectId, ref: 'User'},
     views: {type: Number},
-    vote: {type: Number},
+    votes: [{type: Schema.Types.ObjectId, ref: 'User'}],
     comments: [{type: Schema.Types.ObjectId, ref: 'Comment'}],
     tags: [{type: String, index: true}],
     createdAt: {type: Date},

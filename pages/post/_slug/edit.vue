@@ -38,8 +38,9 @@
                     </div>
                     <div class="row form-group">
                         <div class="col-md-12 text-center">
-                            <button class="btn btn-primary">Gửi bài</button>
-                            <a style="margin-left: 5px" class="btn btn-default" @click="cancel">Bỏ qua</a>
+                            <button class="btn btn-primary">Cập nhật bài</button>
+                            <a style="margin-left: 5px" class="btn btn-danger" @click.stop="deletePost">Xóa bài</a>
+                            <a style="margin-left: 5px" class="btn btn-default" @click.stop="cancel">Bỏ qua</a>
                         </div>
                     </div>
                 </form>
@@ -48,8 +49,8 @@
     </div>
 </template>
 <script>
-    import editor from '../../components/editor.vue'
-    import tagsInput from '../../components/tags/input.vue'
+    import editor from '../../../components/editor.vue'
+    import tagsInput from '../../../components/tags/input.vue'
     import axios from 'axios'
 
     export default {
@@ -58,12 +59,18 @@
             editor,
             tagsInput
         },
+        fetch({store, route}) {
+            return Promise.all([
+                store.dispatch('GET_POST', route.params.slug)
+            ]).catch(e => {
+            })
+        },
         data() {
             return {
                 error: null,
-                title: null,
-                content: null,
-                tags: [],
+                title: this.$store.state.post.title,
+                content: this.$store.state.post.content,
+                tags: this.$store.state.post.tags.slice(),
                 mode: 0
             }
         },
@@ -78,11 +85,11 @@
                         this.errors.add('error', 'The content field is too short.');
                     }
                     else {
-                        this.$store.dispatch('ADD_POST', {
+                        this.$store.dispatch('UPDATE_POST', {
+                            slug: this.$route.params.slug,
                             title: this.title,
                             content: this.content,
-                            tags: this.tags,
-                            userId: this.$store.state.authUser._id
+                            tags: this.tags
                         }).then(() => {
                             this.$router.push('/')
                         })
@@ -91,6 +98,14 @@
             },
             cancel() {
                 this.$router.push('/')
+            },
+            deletePost() {
+                let ret = confirm('Bạn có chắc chắn muốn xóa bài viết?');
+                if (ret) {
+                    this.$store.dispatch('DELETE_POST', this.$route.params.slug).then(() => {
+                        this.$router.push('/')
+                    })
+                }
             },
             handleChange(index, text) {
                 if (text) {

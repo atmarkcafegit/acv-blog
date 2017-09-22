@@ -36,8 +36,23 @@
                                     <span class="hidden-xs"><a href="#comments"><i
                                             class="fa fa-comments-o"></i> {{ post.user.comments }} </a></span>
                                     <small class="hidden-xs">&#124;</small>
-                                    <span class="hidden-xs"><a href="#"><i class="fa fa-eye"></i> {{ post.views
-                                        }}</a></span>
+                                    <span class="hidden-xs">
+                                        <a href="#"><i class="fa fa-eye"></i>{{ post.views}}</a>
+                                    </span>
+                                    <small class="hidden-xs">&#124;</small>
+                                    <span class="hidden-xs">
+                                        <a href="#"><i
+                                                class="fa fa-thumbs-o-up"></i> {{ post.votes ? post.votes.length : 0}}</a>
+                                    </span>
+                                    <small v-if="isAuth" class="hidden-xs">&#124;</small>
+                                    <span v-if="isAuth" class="hidden-xs">
+                                        <nuxt-link :to="'/post/' + $route.params.slug + '/edit'" style="color: #0288d1">Sửa</nuxt-link>
+                                    </span>
+                                    <small v-if="isLogged && !isAuth" class="hidden-xs">&#124;</small>
+                                    <span v-if="isLogged && !isAuth" class="hidden-xs">
+                                        <a v-if="!isLiked" href="#" style="color: #0288d1" @click.stop="like">Thích</a>
+                                        <a v-else="" href="#" style="color: #0288d1" @click.stop="unlike">Bỏ thích</a>
+                                    </span>
                                 </div><!-- end meta -->
 
                                 <div class="post-sharing">
@@ -139,12 +154,59 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-3 col-sm-3 col-xs-12 m22 single-post" style="background-color: #ddd">
+                <div class="avatar">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <img src="~/static/avatar_128x128.png" width="128"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <span class="name"><h4>{{post.user.username}}</h4></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <span class="score"><h4>Bài viết<br>{{post.user.posts ? post.user.posts.length : 0}}</h4></span>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="score"><h4>Điểm số<br>{{score}}</h4></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 <script>
-    import editor from '../../components/editor.vue'
+    import editor from '../../../components/editor.vue'
     import * as _ from 'lodash'
+    import * as moment from 'moment'
+
+
+    const calcScore = (user, month) => {
+        let postViews = 0;
+
+        _.each(user.posts, post => {
+            postViews += post.views;
+        });
+
+        let viewScore = Math.floor(postViews / 100);
+
+        if (user.score.length === 0)
+            return viewScore;
+
+        let score = _.find(user.score, score => {
+            return score.month === month;
+        });
+
+        if (score) {
+            return score.value + viewScore;
+        }
+
+        return viewScore;
+    };
 
     export default {
         components: {
@@ -155,13 +217,11 @@
                 content: null
             }
         },
-        async fetch({store, route}) {
-            try {
-                await store.dispatch('GET_POST', route.params.slug);
-            }
-            catch (e) {
-
-            }
+        fetch({store, route}) {
+            return Promise.all([
+                store.dispatch('GET_POST', route.params.slug)
+            ]).catch(e => {
+            })
         },
         computed: {
             post() {
@@ -170,8 +230,18 @@
             comments() {
                 return this.$store.state.comments;
             },
-            isLogged: function () {
+            isLogged() {
                 return !!this.$store.state.authUser;
+            },
+            isAuth() {
+                return !!this.$store.state.authUser &&
+                    this.$store.state.authUser.username === this.$store.state.post.user.username;
+            },
+            isLiked() {
+                return this.$store.state.liked;
+            },
+            score() {
+                return calcScore(this.$store.state.post.user, moment(new Date()).format('YYYY-MM'))
             }
         },
         mounted() {
@@ -199,7 +269,34 @@
             },
             deleteComment(id) {
                 this.$store.dispatch('DELETE_COMMENT', id);
+            },
+            like() {
+                this.$store.dispatch('LIKE', {
+                    userId: this.$store.state.authUser._id,
+                    postId: this.post._id
+                });
+            },
+            unlike() {
+                this.$store.dispatch('UNLIKE', {
+                    userId: this.$store.state.authUser._id,
+                    postId: this.post._id
+                });
             }
         }
     }
 </script>
+<style scoped>
+    .avatar {
+        margin-top: 30px;
+        text-align: center;
+        padding: 10px;
+    }
+
+    .name h4 {
+        font-weight: 700 !important;
+    }
+
+    .score h4 {
+        font-weight: 300;
+    }
+</style>
