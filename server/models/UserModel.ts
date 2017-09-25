@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import {Schema} from 'mongoose';
 import {IPostModel} from './PostModel'
-import {IScoreModel} from "~/server/models/ScoreModel";
+import {IScoreModel} from "../models/ScoreModel";
 
 import * as mongoosePaginate from 'mongoose-paginate';
 
