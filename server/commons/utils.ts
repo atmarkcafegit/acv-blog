@@ -1,5 +1,4 @@
 import * as express from 'express'
-import {IUserModel} from "../models/UserModel";
 import * as _ from 'lodash'
 
 export const PAGE_LIMIT = 5;
@@ -15,11 +14,11 @@ export const auth = (req: express.Request, res: express.Response, next: express.
     }
 };
 
-export const calcScore = (user: IUserModel, month) => {
+export const calcScore = (user, month) => {
     let postViews = 0;
 
     _.each(user.posts, post => {
-        postViews += post.views;
+        postViews += (post as any).views;
     });
 
     let viewScore = Math.floor(postViews / 100);
@@ -28,11 +27,11 @@ export const calcScore = (user: IUserModel, month) => {
         return viewScore;
 
     let score = _.find(user.score, score => {
-        return score.month === month;
+        return (score as any).month === month;
     });
 
     if (score) {
-        return score.value + viewScore;
+        return (score as any).value + viewScore;
     }
 
     return viewScore;

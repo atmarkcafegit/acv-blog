@@ -26,7 +26,14 @@ class UserController {
 
     @Get('user')
     private async getUser(@Param('username') username: string) {
+        let user = await (UserModel.findOne({username: username}) as any)
+            .deepPopulate(['score', 'posts']);
 
+        if (user) {
+            return new Result('user', user);
+        } else {
+            return new Error(404, "User not found.");
+        }
     }
 
     private async updateUser() {

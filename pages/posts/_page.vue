@@ -174,28 +174,7 @@
     import * as moment from 'moment'
     import * as _ from 'lodash'
 
-    const calcScore = (user, month) => {
-        let postViews = 0;
-
-        _.each(user.posts, post => {
-            postViews += post.views;
-        });
-
-        let viewScore = Math.floor(postViews / 100);
-
-        if (user.score.length === 0)
-            return viewScore;
-
-        let score = _.find(user.score, score => {
-            return score.month === month;
-        });
-
-        if (score) {
-            return score.value + viewScore;
-        }
-
-        return viewScore;
-    };
+    import {calcScore} from '../../server/commons/utils'
 
     export default {
         serverCacheKey() {

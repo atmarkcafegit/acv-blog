@@ -18,7 +18,7 @@ export const state = () => ({
 });
 
 export const mutations = {
-    SET_USER(state, user) {
+    SET_AUTH_USER(state, user) {
         state.authUser = user
     },
     SET_POSTS(state, posts) {
@@ -54,13 +54,16 @@ export const mutations = {
     },
     SET_LIKED(state, liked) {
         state.liked = liked;
+    },
+    SET_USER(state, user) {
+        state.user = user;
     }
 };
 
 export const actions = {
     nuxtServerInit({commit}, {req}) {
         if (req.session && req.session.authUser) {
-            commit('SET_USER', req.session.authUser)
+            commit('SET_AUTH_USER', req.session.authUser)
         }
     },
     LOGIN({commit}, {username, password}) {
@@ -69,13 +72,13 @@ export const actions = {
             password
         }).then((res) => {
             if (res.data.ok)
-                commit('SET_USER', res.data.user)
+                commit('SET_AUTH_USER', res.data.user)
         });
     },
     LOGOUT({commit}) {
         return axios.post(`/logout`)
             .then(() => {
-                commit('SET_USER', null)
+                commit('SET_AUTH_USER', null)
             })
     },
     REGISTER({}, {username, password, email}) {
@@ -204,6 +207,14 @@ export const actions = {
             .then(response => {
                 if (response.data.ok) {
                     commit('SET_LIKED', false);
+                }
+            })
+    },
+    GET_USER({commit}, username) {
+        return axios.get(`/api/user/${username}`)
+            .then(response => {
+                if (response.data.ok) {
+                    commit('SET_USER', response.data.user);
                 }
             })
     }
