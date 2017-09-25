@@ -2,7 +2,7 @@ import {Controller, Data, Error, Post, Result, Session} from "minmin";
 import {UserModel} from "../models/UserModel";
 
 @Controller()
-class IndexController {
+class AuthController {
 
     @Post('login')
     private async login(@Data('username') username: string,

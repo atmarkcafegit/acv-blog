@@ -1,50 +1,14 @@
 import {Controller, Data, Delete, Error, Get, Param, Post, Put, Result} from "minmin";
 import {PostModel} from "../models/PostModel";
-import {IUserModel, UserModel} from "../models/UserModel";
+import {UserModel} from "../models/UserModel";
 import {IScoreModel, ScoreModel} from "../models/ScoreModel";
 import {CommentModel} from '../models/CommentModel';
-import * as express from 'express'
 import * as moment from 'moment'
 import * as _ from 'lodash'
-
-const PAGE_LIMIT = 5;
-
-const calcScore = (user: IUserModel, month) => {
-    let postViews = 0;
-
-    _.each(user.posts, post => {
-        postViews += post.views;
-    });
-
-    let viewScore = Math.floor(postViews / 100);
-
-    if (user.score.length === 0)
-        return viewScore;
-
-    let score = _.find(user.score, score => {
-        return score.month === month;
-    });
-
-    if (score) {
-        return score.value + viewScore;
-    }
-
-    return viewScore;
-};
-
-const auth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    if ((req as any).session.authUser)
-        return next();
-    else {
-        res.status(401).json({
-            ok: false,
-            message: 'Unauthorized'
-        })
-    }
-};
+import {auth, PAGE_LIMIT} from "../commons/utils";
 
 @Controller('api')
-class ApiController {
+class PostController {
 
     @Get('posts')
     private async getPosts(@Param('page', true) page: number) {
@@ -254,81 +218,5 @@ class ApiController {
         await PostModel.update({comments: commentId}, {$pull: {comments: commentId}});
 
         return new Result()
-    }
-
-    @Get('hot-authors')
-    private async getHotAuthors() {
-        let month = moment(new Date()).format('YYYY-MM');
-
-        let users = await UserModel.find().populate({
-            path: 'score',
-            match: {month: month}
-        }).populate('posts');
-
-        users = _.take(_.sortBy(users.slice(), user => calcScore(user, month)).reverse(), 5);
-
-        return new Result('authors', users);
-    }
-
-    @Get('hot-posts')
-    private async getHotPosts() {
-        let posts = await PostModel.find({},
-            ['_id', 'slug', 'title', 'views', 'createdAt', 'updatedAt'])
-            .sort({views: -1}).limit(5);
-
-        return new Result('posts', posts);
-    }
-
-    @Get('hot-tags')
-    private async getHotTags() {
-        let tags = await PostModel.aggregate([
-            {"$unwind": "$tags"},
-            {
-                "$group": {
-                    "_id": "$tags",
-                    "count": {"$sum": 1}
-                }
-            },
-            {"$sort": {"_id": -1}},
-            {"$limit": 10}
-        ]);
-
-        return new Result('tags', tags);
-    }
-
-    @Get('tags')
-    private async getTags() {
-        let tags = await PostModel.aggregate([
-            {"$unwind": "$tags"},
-            {
-                "$group": {
-                    "_id": "$tags",
-                    "count": {"$sum": 1}
-                }
-            },
-            {"$sort": {"_id": -1}}
-        ]);
-
-        return new Result('tags', tags);
-    }
-
-    @Get('tag-posts')
-    private async getTagPosts(@Param('tag') tag: string, @Param('page', true) page: number) {
-        let posts = await PostModel.paginate({tags: tag}, {
-            page: page ? page : 1,
-            sort: {
-                createdAt: '-1'
-            },
-            populate: 'user',
-            limit: PAGE_LIMIT
-        });
-
-        if (posts) {
-            if (posts.docs.length === 0) {
-                return new Error(404, "No post.");
-            }
-
-            return new Result('posts', posts);
-        }
     }
 }

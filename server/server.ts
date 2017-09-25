@@ -2,8 +2,10 @@ import * as mongoose from 'mongoose'
 import * as Q from 'q'
 import {WebServer} from "minmin"
 
-import './controllers/IndexController'
-import './controllers/ApiController'
+import './controllers/AuthController'
+import './controllers/HomeController'
+import './controllers/PostController'
+import './controllers/UserController'
 
 let config = require('../nuxt.config.js');
 config.dev = !(process.env.NODE_ENV === 'production');
