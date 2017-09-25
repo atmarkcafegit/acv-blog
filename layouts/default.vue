@@ -55,33 +55,19 @@
                                     <a>{{t.text}}</a>
                                 </nuxt-link>
                             </ul>
-                            <ul class="nav navbar-nav navbar-right searchandbag">
-                                <li class="dropdown searchdropdown hasmenu">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                       aria-haspopup="true" aria-expanded="false"><i class="fa fa-search"></i></a>
-                                    <ul class="dropdown-menu show-right">
-                                        <li>
-                                            <div id="custom-search-input">
-                                                <div class="input-group col-md-12">
-                                                    <input type="text" class="form-control input-lg"
-                                                           placeholder="Search here..."/>
-                                                    <span class="input-group-btn">
-                                                        <button class="btn btn-primary btn-lg" type="button">
-                                                            <i class="fa fa-search"></i>
-                                                        </button>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
                             <ul class="nav navbar-nav navbar-right ">
+                                <li v-if="isLogged">
+                                    <nuxt-link :to="'/users/' + user.username"><i class="fa fa-user"></i>
+                                        {{user.username}}
+                                    </nuxt-link>
+                                </li>
                                 <li v-if="!isLoginPath && !isLogged">
                                     <a href="" @click.prevent.stop="login" class="">ĐĂNG NHẬP</a>
                                 </li>
                                 <li v-if="isLogged">
-                                    <a href="" @click.prevent.stop="logout">ĐĂNG XUẤT</a>
+                                    <a href="" @click.prevent.stop="logout">
+                                        <i class="fa fa-sign-out"></i>
+                                    </a>
                                 </li>
                             </ul>
                         </div>
@@ -118,6 +104,9 @@
             },
             isLogged: function () {
                 return !!this.$store.state.authUser;
+            },
+            user: function () {
+                return this.$store.state.authUser;
             }
         },
         methods: {

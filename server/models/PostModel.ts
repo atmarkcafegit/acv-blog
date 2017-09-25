@@ -1,8 +1,9 @@
 import * as mongoose from 'mongoose';
 import {Schema} from 'mongoose';
 import {ICommentModel} from './CommentModel';
-import * as mongoosePaginate from 'mongoose-paginate';
 import {IUserModel} from "~/server/models/UserModel";
+
+import * as mongoosePaginate from 'mongoose-paginate';
 
 const mongooseDeepPopulate = require('mongoose-deep-populate')(mongoose);
 

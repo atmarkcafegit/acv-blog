@@ -3,6 +3,8 @@ import * as _ from 'lodash'
 
 export const state = () => ({
     authUser: null,
+    user: null,
+    users: [],
     posts: [],
     post: {},
     lastRoute: '/',

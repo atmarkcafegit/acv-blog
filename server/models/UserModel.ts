@@ -3,16 +3,28 @@ import {Schema} from 'mongoose';
 import {IPostModel} from './PostModel'
 import {IScoreModel} from "~/server/models/ScoreModel";
 
+import * as mongoosePaginate from 'mongoose-paginate';
+
+const mongooseDeepPopulate = require('mongoose-deep-populate')(mongoose);
+
 const bcrypt = require('bcrypt');
 
 const SALT_WORK_FACTOR = 10;
 
+export enum USER_ROLE {
+    MEMBER,
+    LEADER,
+    ADMIN
+}
+
 export interface IUserModel extends mongoose.Document {
     username: string,
     password: string,
+    displayName: string,
     email: string,
     posts: Array<IPostModel>,
     score: Array<IScoreModel>,
+    role: USER_ROLE,
     createdAt: Date,
     updatedAt: Date,
 
@@ -22,9 +34,11 @@ export interface IUserModel extends mongoose.Document {
 export const UserSchema = new Schema({
     username: {type: String, required: true, index: {unique: true}},
     password: {type: String, required: true},
+    displayName: {type: String},
     email: {type: String},
     posts: [{type: Schema.Types.ObjectId, ref: 'Post'}],
     score: [{type: Schema.Types.ObjectId, ref: 'Score'}],
+    role: {type: Number},
     createdAt: {type: Date},
     updatedAt: {type: Date}
 });
@@ -63,5 +77,8 @@ UserSchema.methods.toJSON = function () {
     delete obj.password;
     return obj
 };
+
+UserSchema.plugin(mongoosePaginate);
+UserSchema.plugin(mongooseDeepPopulate);
 
 export const UserModel = mongoose.model<IUserModel>("User", UserSchema);
