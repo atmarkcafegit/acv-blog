@@ -14,7 +14,7 @@
                 <span><h4>E-mail: <a :href="'mailto:' + user.email">{{user.email}}</a></h4></span>
             </div>
             <div class="col-md-3">
-                <nuxt-link v-if="user._id === authUser._id" :to="'/user/' + user.username + '/edit'"
+                <nuxt-link v-if="isAuth && user._id === authUser._id" :to="'/user/' + user.username + '/edit'"
                            class="btn btn-danger">Cập nhật
                 </nuxt-link>
             </div>
@@ -59,6 +59,9 @@
         computed: {
             user() {
                 return this.$store.state.user;
+            },
+            isAuth() {
+                return !!this.$store.state.authUser;
             },
             authUser() {
                 return this.$store.state.authUser;
