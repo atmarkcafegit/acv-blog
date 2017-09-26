@@ -6,12 +6,17 @@
                     <img src="~/static/avatar_128x128.png" width="128"/>
                 </div>
             </div>
-            <div class="col-md-9">
+            <div class="col-md-6">
                 <h3>Tác giả: {{user.username}}</h3>
                 <h4>Bài viết: {{user.posts ? user.posts.length : 0}}</h4>
                 <h4>Điểm số: {{score}}</h4>
                 <h4>Đăng ký: {{register}}</h4>
-                <span> <h4>E-mail: <a :href="'mailto:' + user.email">{{user.email}}</a></h4></span>
+                <span><h4>E-mail: <a :href="'mailto:' + user.email">{{user.email}}</a></h4></span>
+            </div>
+            <div class="col-md-3">
+                <nuxt-link v-if="user._id === authUser._id" :to="'/user/' + user.username + '/edit'"
+                           class="btn btn-danger">Cập nhật
+                </nuxt-link>
             </div>
         </div>
         <div class="row">
@@ -54,6 +59,9 @@
         computed: {
             user() {
                 return this.$store.state.user;
+            },
+            authUser() {
+                return this.$store.state.authUser;
             },
             score() {
                 return calcScore(this.$store.state.user, moment(new Date()).format('YYYY-MM'))

@@ -57,7 +57,7 @@
                             </ul>
                             <ul class="nav navbar-nav navbar-right ">
                                 <li v-if="isLogged">
-                                    <nuxt-link :to="'/users/' + user.username"><i class="fa fa-user"></i>
+                                    <nuxt-link :to="'/user/' + user.username"><i class="fa fa-user"></i>
                                         {{user.username}}
                                     </nuxt-link>
                                 </li>

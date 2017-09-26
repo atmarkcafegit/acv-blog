@@ -54,15 +54,21 @@
     import axios from 'axios'
 
     export default {
-        middleware: 'auth',
+        middleware: ['auth'],
         components: {
             editor,
             tagsInput
         },
-        fetch({store, route}) {
+        fetch({store, route, redirect}) {
             return Promise.all([
                 store.dispatch('GET_POST', route.params.slug)
-            ]).catch(e => {
+            ]).then(() => {
+                if (!store.state.post.user)
+                    return redirect('/');
+
+                if (store.state.authUser._id !== store.state.post.user._id)
+                    redirect('/')
+            }).catch(e => {
             })
         },
         data() {
