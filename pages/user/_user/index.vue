@@ -11,6 +11,7 @@
                 <h4>Bài viết: {{user.posts ? user.posts.length : 0}}</h4>
                 <h4>Điểm số: {{score}}</h4>
                 <h4>Đăng ký: {{register}}</h4>
+                <span> <h4>E-mail: <a :href="'mailto:' + user.email">{{user.email}}</a></h4></span>
             </div>
         </div>
         <div class="row">
