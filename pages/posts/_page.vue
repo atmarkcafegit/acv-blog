@@ -78,7 +78,7 @@
                                 <div class="block">
                                     <div class="inner avatar">{{ author.username | shortDescription(1) }}</div>
                                     <div class="inner">
-                                        <nuxt-link :to="'/users/' + author.username">{{ author.username }}</nuxt-link>
+                                        <nuxt-link :to="'/user/' + author.username">{{ author.username }}</nuxt-link>
                                         <br>
                                         <div>
                                             <span style="font-weight: bold; font-size: 10px; color: #676767">

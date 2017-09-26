@@ -31,7 +31,7 @@
                             <nuxt-link :to="'/post/' + post.slug">{{post.title}}</nuxt-link>
                         </td>
                         <td>{{post.views ? post.views : 0}}</td>
-                        <td>{{post.score ? post.score.length : 0}}</td>
+                        <td>{{post.votes ? post.votes.length : 0}}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -41,7 +41,7 @@
 </template>
 <script>
     import * as moment from 'moment'
-    import {calcScore} from '../../server/commons/utils'
+    import {calcScore} from '../../../server/commons/utils'
 
     export default {
         fetch({store, route}) {

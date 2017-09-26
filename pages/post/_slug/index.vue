@@ -158,12 +158,17 @@
                 <div class="avatar">
                     <div class="row">
                         <div class="col-md-12">
-                            <img src="~/static/avatar_128x128.png" width="128"/>
+                            <nuxt-link :to="'/user/' + post.user.username">
+                                <img src="~/static/avatar_128x128.png" width="128"/>
+                            </nuxt-link>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <span class="name"><h4>{{post.user.username}}</h4></span>
+                            <span class="name">
+                                <nuxt-link :to="'/user/' + post.user.username">
+                                    <h4>{{post.user.username}}</h4>
+                                </nuxt-link></span>
                         </div>
                     </div>
                     <div class="row">
