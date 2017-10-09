@@ -284,6 +284,11 @@
 
     .name h4 {
         font-weight: 700 !important;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 185px;
+        display: block;
+        overflow: hidden;
     }
 
     .score h4 {
