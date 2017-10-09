@@ -1,8 +1,8 @@
 <template>
     <div class="container sitecontainer bgw">
         <div class="row">
-            <div class="avatar">
-                <div class="col-md-3">
+            <div class="col-md-3">
+                <div class="avatar">
                     <img src="~/static/avatar_128x128.png" width="128"/>
                 </div>
             </div>

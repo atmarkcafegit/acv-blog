@@ -22,34 +22,30 @@
 
                             <div class="col-md-10">
                                 <div class="title-area">
-                                    <div class="colorfulcats">
-
-                                    </div>
+                                    <div class="colorfulcats"></div>
                                     <router-link :to="{path: '/post/' + post.slug}">
                                         <h3> {{post.title}}</h3>
                                     </router-link>
                                     <div> {{ post.content | shortDescription(150, 1) }} </div>
-
                                     <div class="large-post-meta">
-                                        <span class="avatar"><a href="#"><img src="" alt=""
-                                                                              class="img-circle"> {{ post.user.username
-                                            }}</a></span>
+                                        <span class="avatar">
+                                             <nuxt-link class="img-circle" :to="'/user/' + post.user.username">
+                                                 <img src="" alt="" class="img-circle">
+                                                 {{ post.user.username }}
+                                             </nuxt-link>
+                                        </span>
                                         <small>&#124;</small>
-                                        <span><a href="#"><i
-                                                class="fa fa-clock-o"></i> {{ post.createdAt | dateFormat
-                                            }}</a></span>
+                                        <span><i class="fa fa-clock-o"></i> {{ post.createdAt | dateFormat}}</span>
                                         <small class="hidden-xs">&#124;</small>
                                         <span class="hidden-xs"><router-link
                                                 :to="{path: '/post/' + post.slug + '#comments'}"><i
                                                 class="fa fa-comments-o"></i> {{ post.comments | countData
                                             }} </router-link></span>
                                         <small class="hidden-xs">&#124;</small>
-                                        <span class="hidden-xs"><a href="#"><i
-                                                class="fa fa-eye"></i> {{ post.views}}</a></span>
+                                        <span class="hidden-xs"><i class="fa fa-eye"></i> {{ post.views}}</span>
                                         <small class="hidden-xs">&#124;</small>
                                         <span class="hidden-xs">
-                                            <a href="#"><i
-                                                    class="fa fa-thumbs-o-up"></i> {{ post.votes ? post.votes.length : 0}}</a>
+                                            <i class="fa fa-thumbs-o-up"></i> {{ post.votes ? post.votes.length : 0}}
                                         </span>
                                     </div>
                                     <!-- end meta -->

@@ -27,22 +27,29 @@
                                 <h3>{{ post.title }}</h3>
 
                                 <div class="large-post-meta">
-                                    <span class="avatar"><a href="#"><img src="" alt=""
-                                                                          class="img-circle"> {{post.user.username}}</a></span>
+                                    <span class="avatar">
+                                        <nuxt-link :to="'/user/' + post.user.username">
+                                            <img src="" alt=""
+                                                 class="img-circle"> {{post.user.username}}
+                                        </nuxt-link>
+                                    </span>
                                     <small>&#124;</small>
-                                    <span><a href="#"><i class="fa fa-clock-o"></i> {{ post.createdAt | dateFormat
-                                        }}</a></span>
-                                    <small class="hidden-xs">&#124;</small>
-                                    <span class="hidden-xs"><a href="#comments"><i
-                                            class="fa fa-comments-o"></i> {{ post.user.comments }} </a></span>
+                                    <span><i class="fa fa-clock-o"></i> {{ post.createdAt | dateFormat}}</span>
                                     <small class="hidden-xs">&#124;</small>
                                     <span class="hidden-xs">
-                                        <a href="#"><i class="fa fa-eye"></i>{{ post.views}}</a>
+                                        <a href="#comments">
+                                            <i class="fa fa-comments-o"></i> {{ post.user.comments }}
+                                        </a>
                                     </span>
                                     <small class="hidden-xs">&#124;</small>
                                     <span class="hidden-xs">
-                                        <a href="#"><i
-                                                class="fa fa-thumbs-o-up"></i> {{ post.votes ? post.votes.length : 0}}</a>
+                                        <span><i class="fa fa-eye"></i> {{ post.views}}</span>
+                                    </span>
+                                    <small class="hidden-xs">&#124;</small>
+                                    <span class="hidden-xs">
+                                        <span><i class="fa fa-thumbs-o-up"></i>
+                                            {{ post.votes ? post.votes.length : 0}}
+                                        </span>
                                     </span>
                                     <small v-if="isAuth" class="hidden-xs">&#124;</small>
                                     <span v-if="isAuth" class="hidden-xs">

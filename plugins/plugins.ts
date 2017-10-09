@@ -4,6 +4,8 @@ import * as moment from 'moment';
 
 Vue.use(VeeValidate);
 
+moment.locale('vi');
+
 Vue.filter('shortDescription', function(value, max, cont) {
     if (value.length > max) {
         return value.substring(0, max) + ((cont) ? '...' : '')
@@ -13,7 +15,7 @@ Vue.filter('shortDescription', function(value, max, cont) {
 });
 
 Vue.filter('dateFormat', function(value) {
-    return moment(value).format('MMMM Do YYYY');
+    return moment(value).format('Do MMMM YYYY');
 });
 
 Vue.filter('countData', function(value) {
