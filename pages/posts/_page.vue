@@ -230,4 +230,12 @@
     .post-category {
         font-size: xx-large;
     }
+
+    .inner a {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 190px;
+        display: inline-block;
+        overflow: hidden;
+    }
 </style>
