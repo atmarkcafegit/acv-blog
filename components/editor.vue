@@ -94,7 +94,6 @@
     .markdown-editor {
         border-radius: 4px;
         padding: 5px;
-        opacity: 0.7;
     }
 
     .border {
