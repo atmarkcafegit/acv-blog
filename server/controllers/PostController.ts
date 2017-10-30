@@ -1,4 +1,4 @@
-import {Controller, Data, Delete, Error, Get, Param, Post, Put, Result} from "minmin";
+import {Controller, Data, Delete, Error, Get, Param, Post, Put, Result, Session} from "minmin";
 import {PostModel} from "../models/PostModel";
 import {UserModel} from "../models/UserModel";
 import {IScoreModel, ScoreModel} from "../models/ScoreModel";
@@ -107,8 +107,9 @@ class PostController {
     }
 
     @Post('post/vote', [auth])
-    private async vote(@Data('userId') userId: string,
-                       @Data('postId') postId: string) {
+    private async vote(@Data('postId') postId: string, @Session() session: any) {
+        let userId = session.authUser;
+
         let [user, post] = await Promise.all([
             UserModel.findById(userId),
             (PostModel.findById(postId) as any).deepPopulate(['user', 'user.score'])
@@ -154,8 +155,8 @@ class PostController {
     }
 
     @Post('post/unvote', [auth])
-    private async unvote(@Data('userId') userId: string,
-                         @Data('postId') postId: string) {
+    private async unvote(@Data('postId') postId: string, @Session() session: any) {
+        let userId = session.authUser;
 
         let [user, post] = await Promise.all([
             UserModel.findById(userId),
