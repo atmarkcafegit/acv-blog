@@ -34,7 +34,8 @@ class PostController {
     private async addPost(@Data('title') title: string,
                           @Data('content') content: string,
                           @Data('tags') tags: [string],
-                          @Data('userId') userId: string) {
+                          @Session() session: any) {
+        let userId = session.authUser._id;
 
         let post = await PostModel.create({
             title: title,
@@ -81,8 +82,14 @@ class PostController {
     private async updatePost(@Param('slug') slug: string,
                              @Data('title') title: string,
                              @Data('content') content: string,
-                             @Data('tags') tags: [string]) {
-        let post = await PostModel.findOneAndUpdate({slug: slug}, {
+                             @Data('tags') tags: [string],
+                             @Session() session: any) {
+        let userId = session.authUser._id;
+
+        let post = await PostModel.findOneAndUpdate({
+            slug: slug,
+            user: userId
+        }, {
             $set: {
                 title: title,
                 content: content,
@@ -97,18 +104,29 @@ class PostController {
     }
 
     @Delete('post', [auth])
-    private async deletePost(@Param('slug') slug: string) {
-        let post = await PostModel.findOneAndRemove({slug: slug}).populate('user');
-        let user = post.user;
-        user.posts.remove(post);
-        await user.save();
+    private async deletePost(@Param('slug') slug: string,
+                             @Session() session: any) {
+        let userId = session.authUser._id;
+        let post = await PostModel.findOneAndRemove({
+            slug: slug,
+            user: userId
+        }).populate('user');
+
+        if (post) {
+            let user = post.user;
+            if (user._id === userId) {
+                user.posts.remove(post);
+                await user.save();
+            }
+        }
 
         return new Result();
     }
 
     @Post('post/vote', [auth])
-    private async vote(@Data('postId') postId: string, @Session() session: any) {
-        let userId = session.authUser;
+    private async vote(@Data('postId') postId: string,
+                       @Session() session: any) {
+        let userId = session.authUser._id;
 
         let [user, post] = await Promise.all([
             UserModel.findById(userId),
@@ -156,7 +174,7 @@ class PostController {
 
     @Post('post/unvote', [auth])
     private async unvote(@Data('postId') postId: string, @Session() session: any) {
-        let userId = session.authUser;
+        let userId = session.authUser._id;
 
         let [user, post] = await Promise.all([
             UserModel.findById(userId),
@@ -190,8 +208,10 @@ class PostController {
 
     @Post('post/comment', [auth])
     private async addComment(@Data('content') content: string,
-                             @Data('userId') userId: string,
-                             @Data('postId') postId: string) {
+                             @Data('postId') postId: string,
+                             @Session() session: any) {
+        let userId = session.authUser._id;
+
         let comment = await CommentModel.create({
             content: content,
             user: userId,
@@ -211,9 +231,13 @@ class PostController {
     }
 
     @Delete('post/comment', [auth])
-    private async deleteComment(@Param('commentId') commentId: string) {
+    private async deleteComment(@Param('commentId') commentId: string,
+                                @Session() session: any) {
+        let userId = session.authUser._id;
+
         await CommentModel.findOneAndRemove({
-            _id: commentId
+            _id: commentId,
+            user: userId
         });
 
         await PostModel.update({comments: commentId}, {$pull: {comments: commentId}});
